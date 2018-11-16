@@ -1,8 +1,8 @@
-var ReportMetricExtractor = function() {
-    
+var ReportMetricExtractor = function () {
+
     const metricConfig = new ReportMetricConfig();
 
-    const accept = function(page, filters) {
+    const accept = function (page, filters) {
         if (filters.cached && filters.cached.indexOf(get(page, 'cached')) == -1) {
             return false;
         }
@@ -14,23 +14,23 @@ var ReportMetricExtractor = function() {
         return true;
     }
 
-    const headers = function(metricNames) {
+    const headers = function (metricNames) {
         return metricNames.map(headerDescription)
     }
 
-    const values = function(page, metricNames) {
+    const values = function (page, metricNames) {
         return metricNames.map((metricName) => get(page, metricName));
     }
 
-    const get = function(page, metricName) {
+    const get = function (page, metricName) {
         let metric = metricConfig.get(metricName);
         let getter = metric.getter.split('.');
         let value = getter.reduce((obj, getter) => obj[getter], page);
-        
+
         return metric.transform ? metric.transform(value) : value;
     }
 
-    const headerDescription = function(metricName) {
+    const headerDescription = function (metricName) {
         return metricConfig.get(metricName).description;
     }
 

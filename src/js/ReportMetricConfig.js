@@ -1,5 +1,4 @@
-var ReportMetricConfig = function() {
-    const regexGroups = { run: 1, view: 2, step: 3};
+var ReportMetricConfig = function () {
 
     const metrics = [
         {
@@ -89,7 +88,7 @@ var ReportMetricConfig = function() {
     const list = () => metrics;
 
     const miliToSeconds = (time) => time / 1000;
-    
+
     const bytesToKilobytes = (time) => time / 1024;
 
     return {

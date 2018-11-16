@@ -16,24 +16,35 @@ var ReportDocument = function (wptUrl) {
                     }
                 };
                 request.onerror = function () {
-                    reject(processResponseFail(this.statusText));
+                    reject(processResponseFail(this));
                 };
                 request.open('GET', wptUrl + wptQuery + testCode);
                 request.send();
             });
     }
 
-    const exportCsv = function (report, exportMetrics, filters) {
+    const exportCsv = function (reports, exportMetrics, filters, header = true) {
         let csv = [];
-        let headers = metricsExtractor.headers(exportMetrics);
-        csv.push(headers.reduce(csvColumnReducer, ''));
-        report.pages
-            .filter(page => metricsExtractor.accept(page, filters))
-            .forEach(page => {
-                let metrics = metricsExtractor.values(page, exportMetrics);
-                csv.push(metrics.reduce(csvColumnReducer, ''))
-            });
+        if (header) {
+            csv.push(exportHeader(exportMetrics));
+        }
+
+        reports.forEach(report => {
+            report.pages
+                .filter(page => metricsExtractor.accept(page, filters))
+                .forEach(page => {
+                    let metrics = metricsExtractor.values(page, exportMetrics);
+                    csv.push(metrics.reduce(csvColumnReducer, ''))
+                });
+        });
+
         return csv.reduce(csvRowReducer, '');
+    }
+
+    const exportHeader = function (exportMetrics) {
+        return metricsExtractor
+            .headers(exportMetrics)
+            .reduce(csvColumnReducer, '');
     }
 
     const processResponseOk = function (response) {
@@ -54,6 +65,7 @@ var ReportDocument = function (wptUrl) {
 
     return {
         get,
-        exportCsv
+        exportCsv,
+        exportHeader
     }
 }

@@ -1,10 +1,12 @@
 <html>
+
 <head>
-    <link rel="stylesheet" href="css/index.css" >
-    <link rel="stylesheet" href="css/spectre-exp.css" >
-    <link rel="stylesheet" href="css/spectre-icons.css" >
-    <link rel="stylesheet" href="css/spectre.css" >
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/spectre-exp.css">
+    <link rel="stylesheet" href="css/spectre-icons.css">
+    <link rel="stylesheet" href="css/spectre.css">
 </head>
+
 <body>
     <div class="form-group">
         <label class="form-label" for="wptEndpoint">WPT Endpoint</label>
@@ -12,7 +14,8 @@
     </div>
     <div class="form-group">
         <label class="form-label" for="testCode">Test Code</label>
-        <input class="form-input" type="text" name="testCode" id="testCode" value="181112_1H_W" placeholder="Test code">
+        <input class="form-input" type="text" name="testCode" id="testCode" value="181112_1H_W" placeholder="test code (separated by comma)"
+            pattern="(\w+_\w+_\w+)(,\w+_\w+_\w+)*">
     </div>
     <div class="form-group" id="metricSelector">
         <label class="form-label">Metrics</label>
@@ -38,7 +41,7 @@
         <textarea class="form-input" name="resultCsv" id="resultCsv" placeholder="Result Csv"></textarea>
     </div>
     <button class="btn btn-primary" onclick="Index.copyToClipboard()">Copy to Clipboard <i class="icon icon-download"></i></button>
-    
+
     <script type="text/javascript" src="js/Template/Index.js"></script>
     <script type="text/javascript" src="js/Template/MetricSelector.template.js"></script>
     <script type="text/javascript" src="js/ReportMetricConfig.js"></script>
@@ -46,4 +49,5 @@
     <script type="text/javascript" src="js/ReportDocument.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
 </body>
+
 </html>

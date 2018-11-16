@@ -2,16 +2,20 @@ var Index = (function () {
 
     const generate = async function () {
         let wptEndpoint = getInputTextValue('wptEndpoint');
-        let testCode = getInputTextValue('testCode');
+        let testCodes = getInputTextValue('testCode').split(',');
         let reportDocument = new ReportDocument(wptEndpoint);
 
-        let report = await reportDocument
-            .get(testCode)
-            .catch((status) => {
-                console.log(status);
-            });
+        let tasks = testCodes.map(testCode => {
+            return reportDocument
+                .get(testCode)
+                .catch((status) => {
+                    console.log(status);
+                });
+        })
 
-        setResult(reportDocument.exportCsv(report, getExportMetrics(), getFilters()));
+        Promise.all(tasks).then(reports => {
+            setResult(reportDocument.exportCsv(reports, getExportMetrics(), getFilters()));
+        })
     }
 
     const copyToClipboard = function () {
