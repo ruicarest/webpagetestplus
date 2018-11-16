@@ -2,6 +2,11 @@ var ReportMetricConfig = function () {
 
     const metrics = [
         {
+            name: 'browser',
+            description: 'Browser',
+            getter: '_browser_name',
+        },
+        {
             name: 'runIndex',
             description: 'Run',
             getter: '_run',

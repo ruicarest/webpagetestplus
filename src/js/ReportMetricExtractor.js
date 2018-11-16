@@ -2,6 +2,10 @@ var ReportMetricExtractor = function () {
 
     const metricConfig = new ReportMetricConfig();
 
+    const pages = function (report) {
+        return report.pages;
+    }
+
     const accept = function (page, filters) {
         if (filters.cached && filters.cached.indexOf(get(page, 'cached')) == -1) {
             return false;
@@ -35,6 +39,7 @@ var ReportMetricExtractor = function () {
     }
 
     return {
+        pages,
         accept,
         headers,
         values,

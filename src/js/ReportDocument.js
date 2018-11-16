@@ -30,7 +30,7 @@ var ReportDocument = function (wptUrl) {
         }
 
         reports.forEach(report => {
-            report.pages
+            metricsExtractor.pages(report)
                 .filter(page => metricsExtractor.accept(page, filters))
                 .forEach(page => {
                     let metrics = metricsExtractor.values(page, exportMetrics);
