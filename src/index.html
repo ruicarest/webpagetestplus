@@ -1,0 +1,49 @@
+<html>
+<head>
+    <link rel="stylesheet" href="css/index.css" >
+    <link rel="stylesheet" href="css/spectre-exp.css" >
+    <link rel="stylesheet" href="css/spectre-icons.css" >
+    <link rel="stylesheet" href="css/spectre.css" >
+</head>
+<body>
+    <div class="form-group">
+        <label class="form-label" for="wptEndpoint">WPT Endpoint</label>
+        <input class="form-input" type="text" name="wptEndpoint" id="wptEndpoint" placeholder="Wpt Endpoint" value="http://we1-dev-infrastructure-webserver-wpt.westeurope.cloudapp.azure.com:4000/">
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="testCode">Test Code</label>
+        <input class="form-input" type="text" name="testCode" id="testCode" value="181112_1H_W" placeholder="Test code">
+    </div>
+    <div class="form-group" id="metricSelector">
+        <label class="form-label">Metrics</label>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Cached</label>
+        <label class="form-checkbox form-inline">
+            <input type="checkbox" name="cached" id="firstView" value="0" checked>
+            <i class="form-icon"></i>First View
+        </label>
+        <label class="form-checkbox form-inline">
+            <input type="checkbox" name="cached" id="repeatView" value="1" checked>
+            <i class="form-icon"></i>Repeat View
+        </label>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="steps">Steps</label>
+        <input class="form-input" type="text" name="steps" id="steps" value="" placeholder="step number (separated by comma)">
+    </div>
+    <button class="btn btn-primary" onclick="Index.generate()">Results</button>
+    <div class="form-group">
+        <label class="form-label" for="resultCsv">CSV</label>
+        <textarea class="form-input" name="resultCsv" id="resultCsv" placeholder="Result Csv"></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="Index.copyToClipboard()">Copy to Clipboard <i class="icon icon-download"></i></button>
+    
+    <script type="text/javascript" src="js/Template/Index.js"></script>
+    <script type="text/javascript" src="js/Template/MetricSelector.template.js"></script>
+    <script type="text/javascript" src="js/ReportMetricConfig.js"></script>
+    <script type="text/javascript" src="js/ReportMetricExtractor.js"></script>
+    <script type="text/javascript" src="js/ReportDocument.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>
