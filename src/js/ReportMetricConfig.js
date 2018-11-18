@@ -2,91 +2,147 @@ var ReportMetricConfig = function () {
 
     const metrics = [
         {
+            name: 'testId',
+            description: 'Id',
+            expression: 'report.id',
+            visible: true
+        },
+        {
+            name: 'location',
+            description: 'Location',
+            expression: 'report.location',
+            visible: true
+        },
+        {
+            name: 'label',
+            description: 'Label',
+            expression: 'report.label',
+            visible: true
+        },
+        {
             name: 'browser',
             description: 'Browser',
-            getter: '_browser_name',
+            expression: 'browser_name',
+            checked: true,
+            visible: true
         },
         {
-            name: 'runIndex',
+            name: 'connectivity',
+            description: 'Connectivity',
+            expression: 'report.connectivity',
+            checked: true,
+            visible: true
+        },
+        {
+            name: 'run',
             description: 'Run',
-            getter: '_run',
+            expression: 'run',
+            checked: true,
+            visible: true
         },
         {
-            name: 'cached',
-            description: 'Cached',
-            getter: '_cached',
+            name: 'cachedView',
+            description: 'Cached View',
+            expression: 'cachedView',
+            checked: true,
+            visible: true
         },
         {
-            name: 'stepNumber',
+            name: 'step',
             description: 'Step',
-            getter: '_step',
+            expression: 'step',
+            checked: true,
+            visible: true
         },
         {
-            name: 'firstByteTime',
+            name: 'ttfb',
             description: 'TTFB',
-            getter: '_TTFB',
-            transform: (time) => miliToSeconds(time)
+            expression: 'TTFB',
+            transform: (time) => miliToSeconds(time),
+            checked: true,
+            visible: true
         },
         {
-            name: 'startRenderTime',
+            name: 'render',
             description: 'Start Render',
-            getter: '_render',
-            transform: (time) => miliToSeconds(time)
+            expression: 'render',
+            transform: (time) => miliToSeconds(time),
+            checked: true,
+            visible: true
         },
         {
             name: 'userTime',
             description: 'User Time',
-            getter: '_userTime',
-            transform: (time) => miliToSeconds(time)
+            expression: 'userTime',
+            transform: (time) => miliToSeconds(time),
+            checked: true,
+            visible: true
         },
         {
             name: 'speedIndex',
             description: 'Speed Index',
-            getter: '_SpeedIndex',
-            transform: (time) => miliToSeconds(time)
+            expression: 'SpeedIndex',
+            transform: (time) => miliToSeconds(time),
+            checked: true,
+            visible: true
         },
         {
-            name: 'firstInteractiveTime',
+            name: 'tti',
             description: 'TTI',
-            getter: '_LastInteractive',
-            transform: (time) => miliToSeconds(time)
+            expression: 'TimeToInteractive',
+            transform: (time) => miliToSeconds(time),
+            checked: true,
+            visible: true
         },
         {
-            name: 'onLoadTime',
+            name: 'plt',
             description: 'PLT',
-            getter: '_docTime',
-            transform: (time) => miliToSeconds(time)
+            expression: 'docTime',
+            transform: (time) => miliToSeconds(time),
+            checked: true,
+            visible: true
         },
         {
-            name: 'onLoadRequests',
+            name: 'requestsDoc',
             description: 'Document Requests',
-            getter: '_requestsDoc',
+            expression: 'requestsDoc',
+            checked: true,
+            visible: true
         },
         {
-            name: 'onLoadBytes',
+            name: 'bytesInDoc',
             description: 'Document Bytes In',
-            getter: '_bytesInDoc',
-            transform: (size) => bytesToKilobytes(size)
+            expression: 'bytesInDoc',
+            transform: (size) => bytesToKilobytes(size),
+            checked: true,
+            visible: true
         },
         {
             name: 'fullyTime',
             description: 'Fully Loaded',
-            getter: '_fullyLoaded',
-            transform: (time) => miliToSeconds(time)
+            expression: 'fullyLoaded',
+            transform: (time) => miliToSeconds(time),
+            checked: true,
+            visible: true
         },
         {
             name: 'fullyRequests',
             description: 'Fully Requests',
-            getter: '_requestsFull',
-            transform: null
+            expression: 'requestsFull',
+            transform: null,
+            checked: true,
+            visible: true
         },
         {
             name: 'fullyBytes',
             description: 'Fully Bytes In',
-            getter: '_bytesIn',
-            transform: (size) => bytesToKilobytes(size)
+            expression: 'bytesIn',
+            transform: (size) => bytesToKilobytes(size),
+            checked: true,
+            visible: true
         },
     ];
+    metrics.forEach(metric => metric.expression = jsonata(metric.expression));
 
     const get = (name) => metrics.filter((metric) => metric.name == name)[0];
 

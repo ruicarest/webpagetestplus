@@ -1,7 +1,7 @@
 var ReportDocument = function (wptUrl) {
 
-    const wptQuery = 'export.php?bodies=1&pretty=1&test=';
-    const metricsExtractor = new ReportMetricExtractor();
+    const wptQuery = 'jsonResult.php?test=';
+    const metricExtractor = new ReportMetricExtractor();
 
     const get = async function (testCode) {
         return new Promise(
@@ -30,25 +30,26 @@ var ReportDocument = function (wptUrl) {
         }
 
         reports.forEach(report => {
-            metricsExtractor.pages(report)
-                .filter(page => metricsExtractor.accept(page, filters))
+            Queryable(metricExtractor.pages(report))
+                .filter(page => metricExtractor.accept(page, filters))
                 .forEach(page => {
-                    let metrics = metricsExtractor.values(page, exportMetrics);
+                    let metrics = metricExtractor.values(page, exportMetrics);
                     csv.push(metrics.reduce(csvColumnReducer, ''))
-                });
+                })
+                .toArray();
         });
 
         return csv.reduce(csvRowReducer, '');
     }
 
     const exportHeader = function (exportMetrics) {
-        return metricsExtractor
+        return metricExtractor
             .headers(exportMetrics)
             .reduce(csvColumnReducer, '');
     }
 
     const processResponseOk = function (response) {
-        return response.response.log;
+        return response.response.data;
     }
 
     const processResponseFail = function (response) {

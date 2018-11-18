@@ -33,9 +33,9 @@ var Index = (function () {
     const getFilters = function () {
         let filters = {};
 
-        let cached = getCheckBoxValues('cached', true);
-        if (cached.length) {
-            filters.cached = cached.map(i => parseInt(i));
+        let view = getCheckBoxValues('view', true);
+        if (view.length) {
+            filters.view = view.map(i => parseInt(i));
         }
 
         let steps = getInputTextValue('steps')
@@ -81,9 +81,9 @@ var Index = (function () {
         let metricCongig = new ReportMetricConfig();
         let metricSelector = document.getElementById('metricSelector');
 
-        metricCongig.list().forEach(metric => {
-            metricSelector.insertAdjacentHTML('beforeend', Template.render('metricSelector', metric));
-        });
+        metricCongig.list()
+            .filter(metric => metric.visible)
+            .forEach(metric => metricSelector.insertAdjacentHTML('beforeend', Template.render('metricSelector', metric)));
     }
 
     renderMetricsSelector();
