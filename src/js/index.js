@@ -1,8 +1,22 @@
 var Index = (function () {
 
-    const generate = async function () {
-        let wptEndpoint = getInputTextValue('wptEndpoint');
-        let testCodes = getInputTextValue('testCode').split(',');
+    const onAggregationChange = function (aggregationInput) {
+        let aggretateTypeInputs = getInputs("aggregateType"),
+            disabledAttr = 'disabled';
+
+        Array.from(aggretateTypeInputs).forEach(i => {
+            if (aggregationInput.checked) {
+                i.removeAttribute(disabledAttr);
+            }
+            else {
+                i.setAttribute(disabledAttr, disabledAttr);
+            }
+        });
+    }
+
+    const generateCsv = async function () {
+        let wptEndpoint = getInputValue('wptEndpoint');
+        let testCodes = getInputValue('testCode').split(',');
         let reportDocument = new ReportDocument(wptEndpoint);
 
         let tasks = testCodes.map(testCode => {
@@ -14,7 +28,7 @@ var Index = (function () {
         })
 
         Promise.all(tasks).then(reports => {
-            setResult(reportDocument.exportCsv(reports, getExportMetrics(), getFilters()));
+            setResult(reportDocument.exportCsv(reports, { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() }));
         })
     }
 
@@ -33,12 +47,12 @@ var Index = (function () {
     const getFilters = function () {
         let filters = {};
 
-        let view = getCheckBoxValues('view', true);
-        if (view.length) {
-            filters.view = view.map(i => parseInt(i));
+        let cachedView = getCheckedInputValues('cachedView');
+        if (cachedView.length) {
+            filters.cachedView = cachedView;
         }
 
-        let steps = getInputTextValue('steps')
+        let steps = getInputValue('steps')
             .split(',')
             .filter(s => s);
         if (steps.length) {
@@ -48,13 +62,24 @@ var Index = (function () {
         return filters;
     }
 
-    const getInputTextValue = function (inputName) {
+    const getAggregation = function () {
+        let aggregateValue = getCheckedInputValue("aggregate");
+        let aggregate = {};
+        if (aggregateValue == "1") {
+            let aggregateType = getCheckedInputValue("aggregateType");
+            aggregate.type = aggregateType;
+        }
+
+        return aggregate;
+    }
+
+    const getInputValue = function (inputName) {
         let inputText = getInput(inputName)
 
         return inputText ? inputText.value : '';
     }
 
-    const getCheckBoxValues = function (inputName, checked) {
+    const getCheckedInputValues = function (inputName, checked = true) {
         let checkboxes = Array.from(getInputs(inputName))
 
         if (checked != undefined) {
@@ -62,6 +87,10 @@ var Index = (function () {
         }
 
         return checkboxes.map(c => c.value);
+    }
+
+    const getCheckedInputValue = function (inputName, checked = true) {
+        return getCheckedInputValues(inputName, checked)[0];
     }
 
     const getInput = function (inputName) {
@@ -89,7 +118,8 @@ var Index = (function () {
     renderMetricsSelector();
 
     return {
-        generate,
-        copyToClipboard,
+        onAggregationChange,
+        generateCsv,
+        copyToClipboard
     };
 })()

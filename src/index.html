@@ -27,7 +27,7 @@
             <i class="form-icon"></i>First View
         </label>
         <label class="form-checkbox form-inline">
-            <input type="checkbox" name="cachedview" id="repeatView" value="repeatView" checked>
+            <input type="checkbox" name="cachedView" id="repeatView" value="repeatView" checked>
             <i class="form-icon"></i>Repeat View
         </label>
     </div>
@@ -36,17 +36,31 @@
         <input class="form-input" type="text" name="steps" id="steps" value="" placeholder="step number (separated by comma)">
     </div>
     <div class="form-group">
-        <button class="btn btn-primary form-inline" onclick="Index.generate()">Results</button>
         <label class="form-checkbox form-inline">
-            <input type="checkbox" name="aggregate" id="aggregate" value="1">
+            <input type="checkbox" name="aggregate" id="aggregate" value="1" onchange="Index.onAggregationChange(this)">
             <i class="form-icon"></i>Aggregate Results
         </label>
+        <div class="form-group form-inline">
+            <label class="form-radio form-inline">
+                <input type="radio" name="aggregateType" id="aggregateAverage" value="average" disabled checked>
+                <i class="form-icon"></i>Average
+            </label>
+            <label class="form-radio form-inline">
+                <input type="radio" name="aggregateType" id="aggregateMedian" value="median" disabled>
+                <i class="form-icon"></i>Median
+            </label>
+            <label class="form-radio form-inline">
+                <input type="radio" name="aggregateType" id="aggregateStDev" value="standardDeviation" disabled>
+                <i class="form-icon"></i>Standard Deviation
+            </label>
+        </div>
     </div>
+    <button class="btn btn-primary form-inline" onclick="Index.generateCsv(this)">Results</button>
     <div class="form-group">
         <label class="form-label" for="resultCsv">CSV</label>
         <textarea class="form-input" name="resultCsv" id="resultCsv" placeholder="Result Csv"></textarea>
     </div>
-    <button class="btn btn-primary" onclick="Index.copyToClipboard()">Copy to Clipboard <i class="icon icon-download"></i></button>
+    <button class="btn btn-primary" onclick="Index.copyToClipboard(this)">Copy to Clipboard <i class="icon icon-download"></i></button>
 
     <script type="text/javascript" src="lib/jsonata.js"></script>
     <script type="text/javascript" src="js/Helpers/Math.js"></script>

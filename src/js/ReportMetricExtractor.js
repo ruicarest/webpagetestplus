@@ -23,6 +23,24 @@ var ReportMetricExtractor = function () {
         }
     }
 
+    const aggregation = function* (report, aggregationType) {
+        let cachedViews = report[aggregationType];
+        for (let cachedView in cachedViews) {
+            let test = cachedViews[cachedView];
+            if (test.steps) {
+                for (let i = 0; i < test.steps.length; i++) {
+                    var step = test.steps[i]
+                    setContext(step, report, 0, cachedView, i);
+                    yield step;
+                }
+            }
+            else {
+                setContext(test, report, 0, cachedView, 1);
+                yield test;
+            }
+        }
+    }
+
     const accept = function (page, filters) {
         if (filters.cachedView && filters.cachedView.indexOf(get(page, 'cachedView')) == -1) {
             return false;
@@ -63,6 +81,7 @@ var ReportMetricExtractor = function () {
 
     return {
         pages,
+        aggregation,
         accept,
         headers,
         values,

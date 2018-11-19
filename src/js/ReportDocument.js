@@ -23,17 +23,23 @@ var ReportDocument = function (wptUrl) {
             });
     }
 
-    const exportCsv = function (reports, exportMetrics, filters, header = true) {
+    const exportCsv = function (reports, options, header = true) {
         let csv = [];
         if (header) {
-            csv.push(exportHeader(exportMetrics));
+            csv.push(exportHeader(options.metrics));
         }
 
         reports.forEach(report => {
-            Queryable(metricExtractor.pages(report))
-                .filter(page => metricExtractor.accept(page, filters))
+            let pages;
+            if (options.aggregate.type) {
+                pages = Queryable(metricExtractor.aggregation(report, options.aggregate.type));
+            } else {
+                pages = Queryable(metricExtractor.pages(report));
+            }
+
+            pages.filter(page => metricExtractor.accept(page, options.filters))
                 .forEach(page => {
-                    let metrics = metricExtractor.values(page, exportMetrics);
+                    let metrics = metricExtractor.values(page, options.metrics);
                     csv.push(metrics.reduce(csvColumnReducer, ''))
                 })
                 .toArray();
