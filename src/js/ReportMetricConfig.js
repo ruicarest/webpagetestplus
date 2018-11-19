@@ -1,28 +1,40 @@
 var ReportMetricConfig = function () {
 
+    const miliToSeconds = (time) => formatNumber(time / 1000);
+
+    const bytesToKilobytes = (time) => formatNumber(time / 1024);
+
+    const formatNumber = (value, digits = 2, defaultValue = 0) => Math.round(!value ? defaultValue : value, digits);
+
+    const defaultString = (value, defaultValue = 'n/a') => !value ? defaultValue : value;
+
     const metrics = [
         {
             name: 'testId',
             description: 'Id',
             expression: 'report.id',
+            transform: defaultString,
             visible: true
         },
         {
             name: 'location',
             description: 'Location',
             expression: 'report.location',
+            transform: defaultString,
             visible: true
         },
         {
             name: 'label',
             description: 'Label',
             expression: 'report.label',
+            transform: defaultString,
             visible: true
         },
         {
             name: 'browser',
             description: 'Browser',
             expression: 'browser_name',
+            transform: defaultString,
             checked: true,
             visible: true
         },
@@ -30,6 +42,7 @@ var ReportMetricConfig = function () {
             name: 'connectivity',
             description: 'Connectivity',
             expression: 'report.connectivity',
+            transform: defaultString,
             checked: true,
             visible: true
         },
@@ -37,6 +50,7 @@ var ReportMetricConfig = function () {
             name: 'run',
             description: 'Run',
             expression: 'run',
+            transform: formatNumber,
             checked: true,
             visible: true
         },
@@ -44,6 +58,7 @@ var ReportMetricConfig = function () {
             name: 'cachedView',
             description: 'Cached View',
             expression: 'cachedView',
+            transform: defaultString,
             checked: true,
             visible: true
         },
@@ -51,6 +66,7 @@ var ReportMetricConfig = function () {
             name: 'step',
             description: 'Step',
             expression: 'step',
+            transform: formatNumber,
             checked: true,
             visible: true
         },
@@ -58,7 +74,7 @@ var ReportMetricConfig = function () {
             name: 'ttfb',
             description: 'TTFB',
             expression: 'TTFB',
-            transform: (time) => miliToSeconds(time),
+            transform: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -66,7 +82,7 @@ var ReportMetricConfig = function () {
             name: 'render',
             description: 'Start Render',
             expression: 'render',
-            transform: (time) => miliToSeconds(time),
+            transform: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -74,7 +90,7 @@ var ReportMetricConfig = function () {
             name: 'userTime',
             description: 'User Time',
             expression: 'userTime',
-            transform: (time) => miliToSeconds(time),
+            transform: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -82,7 +98,7 @@ var ReportMetricConfig = function () {
             name: 'speedIndex',
             description: 'Speed Index',
             expression: 'SpeedIndex',
-            transform: (time) => miliToSeconds(time),
+            transform: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -90,7 +106,7 @@ var ReportMetricConfig = function () {
             name: 'tti',
             description: 'TTI',
             expression: 'TimeToInteractive',
-            transform: (time) => miliToSeconds(time),
+            transform: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -98,7 +114,7 @@ var ReportMetricConfig = function () {
             name: 'plt',
             description: 'PLT',
             expression: 'docTime',
-            transform: (time) => miliToSeconds(time),
+            transform: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -106,6 +122,7 @@ var ReportMetricConfig = function () {
             name: 'requestsDoc',
             description: 'Document Requests',
             expression: 'requestsDoc',
+            transform: formatNumber,
             checked: true,
             visible: true
         },
@@ -113,7 +130,7 @@ var ReportMetricConfig = function () {
             name: 'bytesInDoc',
             description: 'Document Bytes In',
             expression: 'bytesInDoc',
-            transform: (size) => bytesToKilobytes(size),
+            transform: bytesToKilobytes,
             checked: true,
             visible: true
         },
@@ -121,7 +138,7 @@ var ReportMetricConfig = function () {
             name: 'fullyTime',
             description: 'Fully Loaded',
             expression: 'fullyLoaded',
-            transform: (time) => miliToSeconds(time),
+            transform: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -129,7 +146,7 @@ var ReportMetricConfig = function () {
             name: 'fullyRequests',
             description: 'Fully Requests',
             expression: 'requestsFull',
-            transform: null,
+            transform: formatNumber,
             checked: true,
             visible: true
         },
@@ -137,7 +154,7 @@ var ReportMetricConfig = function () {
             name: 'fullyBytes',
             description: 'Fully Bytes In',
             expression: 'bytesIn',
-            transform: (size) => bytesToKilobytes(size),
+            transform: bytesToKilobytes,
             checked: true,
             visible: true
         },
@@ -147,10 +164,6 @@ var ReportMetricConfig = function () {
     const get = (name) => metrics.filter((metric) => metric.name == name)[0];
 
     const list = () => metrics;
-
-    const miliToSeconds = (time) => time / 1000;
-
-    const bytesToKilobytes = (time) => time / 1024;
 
     return {
         get,
