@@ -5,8 +5,8 @@ var Queryable = function (arr) {
         map: function (f) {
             return Queryable({
                 [Symbol.iterator]: function* () {
-                    var x;
-                    for (x of arr) {
+                    var item;
+                    for (item of arr) {
                         yield f(x);
                     }
                 }
@@ -31,8 +31,16 @@ var Queryable = function (arr) {
                     return true;
                 }
             }
-            
+
             return false;
+        },
+        first: function (predicate) {
+            var item;
+            for (item of arr) {
+                if (!predicate || predicate(item)) {
+                    return item;
+                }
+            }
         },
         forEach: function (action) {
             return Queryable({
@@ -48,15 +56,30 @@ var Queryable = function (arr) {
         concat: function (other) {
             return Queryable({
                 [Symbol.iterator]: function* () {
-                    var x;
-                    for (x of arr) {
-                        yield x;
+                    var item;
+                    for (item of arr) {
+                        yield item;
                     }
-                    for (x of other) {
-                        yield x;
+                    for (item of other) {
+                        yield item;
                     }
                 }
             });
+        },
+        groupBy: function (keyGetter) {
+            let map = new Map();
+            let item;
+            for (item of arr) {
+                let key = keyGetter(item);
+                let collection = map.get(key);
+                if (!collection) {
+                    map.set(key, [item]);
+                } else {
+                    collection.push(item);
+                }
+            };
+
+            return map;
         },
         toArray: function () {
             return [...arr];

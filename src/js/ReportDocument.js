@@ -30,19 +30,28 @@ var ReportDocument = function (wptUrl) {
         }
 
         reports.forEach(report => {
-            let pages;
+            let aggOperation;
+            let metricExtractor = new ReportMetricExtractor(report);
+
+            // from
+            let pages = Queryable(metricExtractor.pages());
+
+            // where
+            pages = pages.filter(page => metricExtractor.accept(page, options.filters));
+
+            // group by
             if (options.aggregate.type) {
-                pages = Queryable(metricExtractor.aggregation(report, options.aggregate.type));
+                pages = pages.groupBy(pageKeyGetter);
+                aggOperation = aggregateOperation(options.aggregate.type);
             } else {
-                pages = Queryable(metricExtractor.pages(report));
+                pages = pages.toArray();
             }
 
-            pages.filter(page => metricExtractor.accept(page, options.filters))
-                .forEach(page => {
-                    let metrics = metricExtractor.values(page, options.metrics);
-                    csv.push(metrics.reduce(csvColumnReducer, ''))
-                })
-                .toArray();
+            // select
+            pages.forEach(pageElem => {
+                let metrics = metricExtractor.values(pageElem, options.metrics, aggOperation);
+                csv.push(metrics.reduce(csvColumnReducer, ''))
+            });
         });
 
         return csv.reduce(csvRowReducer, '');
@@ -54,12 +63,34 @@ var ReportDocument = function (wptUrl) {
             .reduce(csvColumnReducer, '');
     }
 
+    const pageKeyGetter = function (page) {
+        return metricExtractor
+            .values(page, ['cachedView', 'step'])
+            .join('_');
+    }
+
+    const aggregateOperation = function (aggregateType) {
+        switch (aggregateType) {
+            case 'average':
+                return Math.avg;
+
+            case 'median':
+                return Math.median;
+
+            case 'standardDeviation':
+                return Math.stdev;
+
+            default:
+                return;
+        }
+    }
+
     const processResponseOk = function (response) {
         return response.response.data;
     }
 
     const processResponseFail = function (response) {
-        return new Error(response.statusText)
+        return new Error(response.statusText);
     }
 
     const csvColumnReducer = function (line, value) {

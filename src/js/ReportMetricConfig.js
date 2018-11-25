@@ -8,33 +8,41 @@ var ReportMetricConfig = function () {
 
     const defaultString = (value, defaultValue = 'n/a') => !value ? defaultValue : value;
 
+    const firstValue = (values) => values[0];
+
+    const count = (values) => values.length || 0;
+
     const metrics = [
         {
             name: 'testId',
             description: 'Id',
             expression: 'report.id',
-            transform: defaultString,
+            format: defaultString,
+            aggregate: firstValue,
             visible: true
         },
         {
             name: 'location',
             description: 'Location',
             expression: 'report.location',
-            transform: defaultString,
+            format: defaultString,
+            aggregate: firstValue,
             visible: true
         },
         {
             name: 'label',
             description: 'Label',
             expression: 'report.label',
-            transform: defaultString,
+            format: defaultString,
+            aggregate: firstValue,
             visible: true
         },
         {
             name: 'browser',
             description: 'Browser',
             expression: 'browser_name',
-            transform: defaultString,
+            format: defaultString,
+            aggregate: firstValue,
             checked: true,
             visible: true
         },
@@ -42,7 +50,8 @@ var ReportMetricConfig = function () {
             name: 'connectivity',
             description: 'Connectivity',
             expression: 'report.connectivity',
-            transform: defaultString,
+            format: defaultString,
+            aggregate: firstValue,
             checked: true,
             visible: true
         },
@@ -50,7 +59,8 @@ var ReportMetricConfig = function () {
             name: 'run',
             description: 'Run',
             expression: 'run',
-            transform: formatNumber,
+            format: formatNumber,
+            aggregate: count,
             checked: true,
             visible: true
         },
@@ -58,7 +68,8 @@ var ReportMetricConfig = function () {
             name: 'cachedView',
             description: 'Cached View',
             expression: 'cachedView',
-            transform: defaultString,
+            format: defaultString,
+            aggregate: firstValue,
             checked: true,
             visible: true
         },
@@ -66,7 +77,8 @@ var ReportMetricConfig = function () {
             name: 'step',
             description: 'Step',
             expression: 'step',
-            transform: formatNumber,
+            format: formatNumber,
+            aggregate: firstValue,
             checked: true,
             visible: true
         },
@@ -74,7 +86,7 @@ var ReportMetricConfig = function () {
             name: 'ttfb',
             description: 'TTFB',
             expression: 'TTFB',
-            transform: miliToSeconds,
+            format: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -82,7 +94,7 @@ var ReportMetricConfig = function () {
             name: 'render',
             description: 'Start Render',
             expression: 'render',
-            transform: miliToSeconds,
+            format: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -90,7 +102,7 @@ var ReportMetricConfig = function () {
             name: 'userTime',
             description: 'User Time',
             expression: 'userTime',
-            transform: miliToSeconds,
+            format: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -98,7 +110,7 @@ var ReportMetricConfig = function () {
             name: 'speedIndex',
             description: 'Speed Index',
             expression: 'SpeedIndex',
-            transform: miliToSeconds,
+            format: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -106,7 +118,7 @@ var ReportMetricConfig = function () {
             name: 'tti',
             description: 'TTI',
             expression: 'TimeToInteractive',
-            transform: miliToSeconds,
+            format: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -114,7 +126,7 @@ var ReportMetricConfig = function () {
             name: 'plt',
             description: 'PLT',
             expression: 'docTime',
-            transform: miliToSeconds,
+            format: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -122,7 +134,7 @@ var ReportMetricConfig = function () {
             name: 'requestsDoc',
             description: 'Document Requests',
             expression: 'requestsDoc',
-            transform: formatNumber,
+            format: formatNumber,
             checked: true,
             visible: true
         },
@@ -130,7 +142,7 @@ var ReportMetricConfig = function () {
             name: 'bytesInDoc',
             description: 'Document Bytes In',
             expression: 'bytesInDoc',
-            transform: bytesToKilobytes,
+            format: bytesToKilobytes,
             checked: true,
             visible: true
         },
@@ -138,7 +150,7 @@ var ReportMetricConfig = function () {
             name: 'fullyTime',
             description: 'Fully Loaded',
             expression: 'fullyLoaded',
-            transform: miliToSeconds,
+            format: miliToSeconds,
             checked: true,
             visible: true
         },
@@ -146,7 +158,7 @@ var ReportMetricConfig = function () {
             name: 'fullyRequests',
             description: 'Fully Requests',
             expression: 'requestsFull',
-            transform: formatNumber,
+            format: formatNumber,
             checked: true,
             visible: true
         },
@@ -154,7 +166,7 @@ var ReportMetricConfig = function () {
             name: 'fullyBytes',
             description: 'Fully Bytes In',
             expression: 'bytesIn',
-            transform: bytesToKilobytes,
+            format: bytesToKilobytes,
             checked: true,
             visible: true
         },

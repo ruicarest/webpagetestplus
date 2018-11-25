@@ -1,7 +1,7 @@
 var Index = (function () {
 
     const onAggregationChange = function (aggregationInput) {
-        let aggretateTypeInputs = getInputs("aggregateType"),
+        let aggretateTypeInputs = getElementsByClassName("js-aggregationOption"),
             disabledAttr = 'disabled';
 
         Array.from(aggretateTypeInputs).forEach(i => {
@@ -59,6 +59,11 @@ var Index = (function () {
             filters.steps = steps.map(s => parseInt(s));
         }
 
+        let outliers = getCheckedInputValue('filterOutliers');
+        if (outliers == '1') {
+            filters.outliers = true;
+        }
+
         return filters;
     }
 
@@ -99,6 +104,10 @@ var Index = (function () {
 
     const getInputs = function (inputName) {
         return document.getElementsByName(inputName)
+    }
+
+    const getElementsByClassName = function (className) {
+        return document.getElementsByClassName(className)
     }
 
     const setResult = function (text) {

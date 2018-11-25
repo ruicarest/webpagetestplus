@@ -36,24 +36,31 @@
         <input class="form-input" type="text" name="steps" id="steps" value="" placeholder="step number (separated by comma)">
     </div>
     <div class="form-group">
+        <label class="form-checkbox">
+            <input type="checkbox" name="filterOutliers" id="filterOutliers" value="1">
+            <i class="form-icon"></i>Filter Outliers
+        </label>
+    </div>
+    <div class="form-group">
         <label class="form-checkbox form-inline">
             <input type="checkbox" name="aggregate" id="aggregate" value="1" onchange="Index.onAggregationChange(this)">
             <i class="form-icon"></i>Aggregate Results
         </label>
-        <div class="form-group form-inline">
-            <label class="form-radio form-inline">
-                <input type="radio" name="aggregateType" id="aggregateAverage" value="average" disabled checked>
-                <i class="form-icon"></i>Average
-            </label>
-            <label class="form-radio form-inline">
-                <input type="radio" name="aggregateType" id="aggregateMedian" value="median" disabled>
-                <i class="form-icon"></i>Median
-            </label>
-            <label class="form-radio form-inline">
-                <input type="radio" name="aggregateType" id="aggregateStDev" value="standardDeviation" disabled>
-                <i class="form-icon"></i>Standard Deviation
-            </label>
-        </div>
+        <label class="form-radio form-inline">
+            <input type="radio" name="aggregateType" id="aggregateAverage" value="average" class="js-aggregationOption"
+                disabled checked>
+            <i class="form-icon"></i>Average
+        </label>
+        <label class="form-radio form-inline">
+            <input type="radio" name="aggregateType" id="aggregateMedian" value="median" class="js-aggregationOption"
+                disabled>
+            <i class="form-icon"></i>Median
+        </label>
+        <label class="form-radio form-inline">
+            <input type="radio" name="aggregateType" id="aggregateStDev" value="standardDeviation" class="js-aggregationOption"
+                disabled>
+            <i class="form-icon"></i>Standard Deviation
+        </label>
     </div>
     <button class="btn btn-primary form-inline" onclick="Index.generateCsv(this)">Results</button>
     <div class="form-group">
