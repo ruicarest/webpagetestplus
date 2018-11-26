@@ -120,18 +120,30 @@ var Index = (function () {
         let metricSelector = document.getElementById('metricSelector');
 
         metricCongig.list()
-            .filter(metric => metric.visible)
-            .forEach(metric => metricSelector.insertAdjacentHTML('beforeend', Template.render('metricSelector', metric)));
+        .filter(metric => metric.visible)
+        .forEach(metric => metricSelector.insertAdjacentHTML('beforeend', Template.render('metricSelector', metric)));
     }
-
+    
     const bindEvents = function () {
         document.getElementById('btnResult').addEventListener('click', generateCsv);
         document.getElementById('btnCopyClipboard').addEventListener('click', copyToClipboard);
         document.getElementById('aggregate').addEventListener('change', onAggregationChange);
     }
 
+    const getCurrentTabInfo = function () {
+        chrome.tabs.getSelected(null, function(tab) {
+            let urlInfo = tab.url.match(/(https?:\/\/.*\/)result\/(\w+_\w+_\w+)\//);
+
+            if (urlInfo) {
+                document.getElementById("wptEndpoint").value = urlInfo[1];
+                document.getElementById("testCode").value = urlInfo[2];
+            }
+        });
+    }
+
     renderMetricsSelector();
-    bindEvents()
+    bindEvents();
+    getCurrentTabInfo()
 
     return {
         generateCsv,
