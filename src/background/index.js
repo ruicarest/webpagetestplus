@@ -4,3 +4,7 @@ chrome.runtime.onInstalled.addListener(function () {
         settings.set('endpoint', 'https://www.webpagetest.org/');
     }
 });
+
+chrome.browserAction.onClicked.addListener(function() {
+    chrome.tabs.create({ url: chrome.runtime.getURL('wptplus/index.html') }, function () { });
+});
