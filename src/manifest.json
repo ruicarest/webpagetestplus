@@ -6,9 +6,17 @@
   "homepage_url": "https://github.com/tiagodaraujo/webpagetestplus/",
   "default_locale": "en",
   "permissions": [
+    "activeTab",
     "tabs",
+    "declarativeContent",
     "clipboardWrite"
   ],
+  "background": {
+    "scripts": [
+      "lib/js/store.js",
+      "background/index.js"
+    ]
+  },
   "browser_action": {
     "default_popup": "browser_action/index.html",
     "default_title": "Export WebPageTest to csv",
