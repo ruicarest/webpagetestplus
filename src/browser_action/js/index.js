@@ -124,10 +124,16 @@ var Index = (function () {
             .forEach(metric => metricSelector.insertAdjacentHTML('beforeend', Template.render('metricSelector', metric)));
     }
 
+    const bindEvents = function () {
+        document.getElementById('btnResult').addEventListener('click', generateCsv);
+        document.getElementById('btnCopyClipboard').addEventListener('click', copyToClipboard);
+        document.getElementById('aggregate').addEventListener('change', onAggregationChange);
+    }
+
     renderMetricsSelector();
+    bindEvents()
 
     return {
-        onAggregationChange,
         generateCsv,
         copyToClipboard
     };
