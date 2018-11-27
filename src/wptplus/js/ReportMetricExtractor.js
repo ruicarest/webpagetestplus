@@ -44,15 +44,15 @@ var ReportMetricExtractor = function (report) {
     }
 
     const accept = function (page, filters) {
-        if (filters.runs && filters.runs.indexOf(get(page, 'run')) == -1) {
+        if (filters.runs && filters.runs.indexOf(getValue(page, 'run')) == -1) {
             return false;
         }
 
-        if (filters.cachedView && filters.cachedView.indexOf(get(page, 'cachedView')) == -1) {
+        if (filters.cachedView && filters.cachedView.indexOf(getValue(page, 'cachedView')) == -1) {
             return false;
         }
 
-        if (filters.steps && filters.steps.indexOf(get(page, 'step')) == -1) {
+        if (filters.steps && filters.steps.indexOf(getValue(page, 'step')) == -1) {
             return false;
         }
 
@@ -62,9 +62,9 @@ var ReportMetricExtractor = function (report) {
                 averageData = Queryable(aggregations('average')).toArray();
             }
 
-            let stdevValue = get(aggregatedView(stdevData, page), 'plt')
-            let avgValue = get(aggregatedView(averageData, page), 'plt')
-            let value = get(page, 'plt')
+            let stdevValue = getValue(aggregatedView(stdevData, page), 'plt')
+            let avgValue = getValue(aggregatedView(averageData, page), 'plt')
+            let value = getValue(page, 'plt')
 
             if (value < avgValue - stdevValue || avgValue + stdevValue < value) {
                 return false;
@@ -75,10 +75,10 @@ var ReportMetricExtractor = function (report) {
     }
 
     const aggregatedView = function (aggregateData, page) {
-        let cachedView = get(page, 'cachedView'),
-            step = get(page, 'step');
+        let cachedView = getValue(page, 'cachedView'),
+            step = getValue(page, 'step');
 
-        return aggregateData.filter(agg => get(agg, 'cachedView') == cachedView && get(agg, 'step') == step)[0];
+        return aggregateData.filter(agg => getValue(agg, 'cachedView') == cachedView && getValue(agg, 'step') == step)[0];
     }
 
     const headers = function (metricNames) {
@@ -86,7 +86,19 @@ var ReportMetricExtractor = function (report) {
     }
 
     const values = function (page, metricNames, aggregate) {
-        return metricNames.map((metricName) => get(page, metricName, aggregate));
+        return metricNames.map((metricName) => getFormat(page, metricName, aggregate));
+    }
+
+    const getValue = function (page, metricName, aggregate) {
+        let [value, metric] = get(page, metricName, aggregate);
+
+        return value;
+    }
+
+    const getFormat = function (page, metricName, aggregate) {
+        let [value, metric] = get(page, metricName, aggregate);
+
+        return metric.format ? metric.format(value) : value;
     }
 
     const get = function (page, metricName, aggregate) {
@@ -101,7 +113,7 @@ var ReportMetricExtractor = function (report) {
             value = metric.expression.evaluate(page);
         }
 
-        return metric.format ? metric.format(value) : value;
+        return [value, metric]
     }
 
     const headerDescription = function (metricName) {
@@ -120,7 +132,6 @@ var ReportMetricExtractor = function (report) {
         aggregations,
         accept,
         headers,
-        values,
-        get
+        values
     }
 }
