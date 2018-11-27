@@ -11,14 +11,25 @@ this.i18n = {
     },
     
     
-    
-    "server": {
-        "en": "Server",
+    "code": {
+        "en": "Code",
     },
     "endpoint": {
         "en": "Endpoint",
     },
+    "lastTab": {
+        "en": "Last Tab",
+    },
+    "server": {
+        "en": "Server",
+    },
+    "testCode": {
+        "en": "Test Code",
+    },
     "url": {
         "en": "Url",
+    },
+    "wptResult": {
+        "en": "WPT Result",
     }
 };

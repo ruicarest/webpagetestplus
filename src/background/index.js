@@ -12,7 +12,8 @@ chrome.browserAction.onClicked.addListener(function () {
         if (urlInfo) {
             let settings = new Store("settings");
 
-            settings.set('lastTab', { endpoint: urlInfo[1], testCode: urlInfo[2] });
+            settings.set('lastTabEndpoint', urlInfo[1]);
+            settings.set('lastTabTestCode', urlInfo[2]);
         }
 
         chrome.tabs.create({ url: chrome.runtime.getURL('wptplus/index.html') });

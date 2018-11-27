@@ -132,12 +132,9 @@ var Index = (function () {
 
     const getCurrentTabInfo = function () {
         let settings = new Store("settings");
-        let lastTab = settings.get('lastTab');
 
-        if (lastTab) {
-            document.getElementById("wptEndpoint").value = lastTab.endpoint;
-            document.getElementById("testCode").value = lastTab.testCode;
-        }
+        document.getElementById("wptEndpoint").value = settings.get('lastTabEndpoint');
+        document.getElementById("testCode").value = settings.get('lastTabTestCode');
     }
 
     renderMetricsSelector();
