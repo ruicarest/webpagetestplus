@@ -13,7 +13,7 @@ var ReportMetricExtractor = function (report) {
                 if (test.steps) {
                     for (let i = 0; i < test.steps.length; i++) {
                         var step = test.steps[i]
-                        setContext(step, report, run, cachedView, i);
+                        setContext(step, report, run, cachedView, i + 1);
                         yield step;
                     }
                 }
