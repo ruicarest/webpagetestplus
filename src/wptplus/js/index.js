@@ -120,10 +120,10 @@ var Index = (function () {
         let metricSelector = document.getElementById('metricSelector');
 
         metricCongig.list()
-        .filter(metric => metric.visible)
-        .forEach(metric => metricSelector.insertAdjacentHTML('beforeend', Template.render('metricSelector', metric)));
+            .filter(metric => metric.visible)
+            .forEach(metric => metricSelector.insertAdjacentHTML('beforeend', Template.render('metricSelector', metric)));
     }
-    
+
     const bindEvents = function () {
         document.getElementById('btnResult').addEventListener('click', generateCsv);
         document.getElementById('btnCopyClipboard').addEventListener('click', copyToClipboard);
@@ -131,14 +131,13 @@ var Index = (function () {
     }
 
     const getCurrentTabInfo = function () {
-        chrome.tabs.getSelected(null, function(tab) {
-            let urlInfo = tab.url.match(/(https?:\/\/.*\/)result\/(\w+_\w+_\w+)\//);
+        let settings = new Store("settings");
+        let lastTab = settings.get('lastTab');
 
-            if (urlInfo) {
-                document.getElementById("wptEndpoint").value = urlInfo[1];
-                document.getElementById("testCode").value = urlInfo[2];
-            }
-        });
+        if (lastTab) {
+            document.getElementById("wptEndpoint").value = lastTab.endpoint;
+            document.getElementById("testCode").value = lastTab.testCode;
+        }
     }
 
     renderMetricsSelector();

@@ -5,6 +5,16 @@ chrome.runtime.onInstalled.addListener(function () {
     }
 });
 
-chrome.browserAction.onClicked.addListener(function() {
-    chrome.tabs.create({ url: chrome.runtime.getURL('wptplus/index.html') }, function () { });
+chrome.browserAction.onClicked.addListener(function () {
+    chrome.tabs.getSelected(null, function (tab) {
+        let urlInfo = tab.url.match(/(https?:\/\/.*\/)result\/(\w+_\w+_\w+)\//);
+
+        if (urlInfo) {
+            let settings = new Store("settings");
+
+            settings.set('lastTab', { endpoint: urlInfo[1], testCode: urlInfo[2] });
+        }
+
+        chrome.tabs.create({ url: chrome.runtime.getURL('wptplus/index.html') });
+    });
 });
