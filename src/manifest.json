@@ -13,7 +13,7 @@
   ],
   "background": {
     "scripts": [
-      "lib/js/store.js",
+      "lib/store.js",
       "background/index.js"
     ]
   },
