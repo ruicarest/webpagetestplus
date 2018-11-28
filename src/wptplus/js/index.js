@@ -1,5 +1,7 @@
 var Index = (function () {
 
+    const reportCache = new ReportCache();
+
     const onAggregationChange = function () {
         let aggregationInput = this,
             aggretateTypeInputs = getElementsByClassName("js-aggregationOption"),
@@ -15,14 +17,15 @@ var Index = (function () {
         });
     }
 
-    const generateCsv = async function () {
+    const generateCsvAsync = async function () {
         let wptEndpoint = getInputValue('wptEndpoint');
         let testCodes = getInputValue('testCode').split(',');
-        let reportDocument = new ReportDocument(wptEndpoint);
+
+        let reportDocument = new ReportDocument(wptEndpoint, reportCache);
 
         let tasks = testCodes.map(testCode => {
             return reportDocument
-                .get(testCode)
+                .getAsync(testCode)
                 .catch((status) => {
                     console.log(status);
                 });
@@ -126,7 +129,7 @@ var Index = (function () {
     }
 
     const bindEvents = function () {
-        document.getElementById('btnResult').addEventListener('click', generateCsv);
+        document.getElementById('btnResult').addEventListener('click', generateCsvAsync);
         document.getElementById('btnCopyClipboard').addEventListener('click', copyToClipboard);
         document.getElementById('aggregate').addEventListener('change', onAggregationChange);
     }
@@ -143,7 +146,7 @@ var Index = (function () {
     getCurrentTabInfo()
 
     return {
-        generateCsv,
+        generateCsvAsync,
         copyToClipboard
     };
 })()

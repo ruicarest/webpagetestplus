@@ -1,9 +1,17 @@
-var ReportDocument = function (wptUrl) {
+var ReportDocument = function (wptEndpoint, reportCache = undefined) {
 
     const wptQuery = 'jsonResult.php?test=';
     const metricExtractor = new ReportMetricExtractor();
 
-    const get = async function (testCode) {
+    const getAsync = async function (testCode) {
+        if (reportCache) {
+            return reportCache.get(wptEndpoint, testCode, async () => await getTestAsync(testCode));
+        }
+
+        return await getTestAsync(testCode);
+    }
+
+    const getTestAsync = async function (testCode) {
         return new Promise(
             (resolve, reject) => {
                 const request = new XMLHttpRequest();
@@ -18,7 +26,7 @@ var ReportDocument = function (wptUrl) {
                 request.onerror = function () {
                     reject(processResponseFail(this));
                 };
-                request.open('GET', wptUrl + wptQuery + testCode);
+                request.open('GET', wptEndpoint + wptQuery + testCode);
                 request.send();
             });
     }
@@ -102,7 +110,7 @@ var ReportDocument = function (wptUrl) {
     }
 
     return {
-        get,
+        getAsync,
         exportCsv,
         exportHeader
     }
