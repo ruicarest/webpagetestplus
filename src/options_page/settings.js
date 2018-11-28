@@ -1,6 +1,6 @@
 window.addEvent("domready", function () {
 
-    var settings = new FancySettings("WPT Plus Settings", "../icons/icon19.png");
+    var settings = new FancySettings("WPT Plus Settings", "../icons/icon24.png");
 
     settings.create({
         "tab": i18n.get("server"),
