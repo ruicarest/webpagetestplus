@@ -86,7 +86,7 @@ var ReportMetricConfig = function () {
         {
             name: 'step',
             description: 'Step',
-            expression: 'step',
+            expression: '$number(step)',
             format: formatNumber,
             aggregate: firstValue,
             checked: true,
@@ -152,6 +152,14 @@ var ReportMetricConfig = function () {
             name: 'bytesInDoc',
             description: 'Document Bytes In',
             expression: 'bytesInDoc',
+            format: bytesToKilobytes,
+            checked: true,
+            visible: true
+        },
+        {
+            name: 'pageSize',
+            description: 'Page Size',
+            expression: 'requests[0].objectSizeUncompressed',
             format: bytesToKilobytes,
             checked: true,
             visible: true
