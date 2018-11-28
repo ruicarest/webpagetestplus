@@ -1,7 +1,8 @@
 var Index = (function () {
 
-    const onAggregationChange = function (aggregationInput) {
-        let aggretateTypeInputs = getElementsByClassName("js-aggregationOption"),
+    const onAggregationChange = function () {
+        let aggregationInput = this,
+            aggretateTypeInputs = getElementsByClassName("js-aggregationOption"),
             disabledAttr = 'disabled';
 
         Array.from(aggretateTypeInputs).forEach(i => {
