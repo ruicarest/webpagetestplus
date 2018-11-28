@@ -93,6 +93,14 @@ var ReportMetricConfig = function () {
             visible: true
         },
         {
+            name: 'plt',
+            description: 'PLT',
+            expression: 'docTime',
+            format: miliToSeconds,
+            checked: true,
+            visible: true
+        },
+        {
             name: 'ttfb',
             description: 'TTFB',
             expression: 'TTFB',
@@ -128,14 +136,6 @@ var ReportMetricConfig = function () {
             name: 'tti',
             description: 'TTI',
             expression: 'TimeToInteractive',
-            format: miliToSeconds,
-            checked: true,
-            visible: true
-        },
-        {
-            name: 'plt',
-            description: 'PLT',
-            expression: 'docTime',
             format: miliToSeconds,
             checked: true,
             visible: true
