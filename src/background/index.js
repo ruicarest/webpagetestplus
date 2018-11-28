@@ -3,6 +3,10 @@ chrome.runtime.onInstalled.addListener(function () {
     if (!settings.get('endpoint')) {
         settings.set('endpoint', 'https://www.webpagetest.org/');
     }
+
+    if (!settings.get('formatNumberDigits')) {
+        settings.set('formatNumberDigits', '2');
+    }
 });
 
 chrome.browserAction.onClicked.addListener(function () {

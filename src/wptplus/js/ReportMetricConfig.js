@@ -1,10 +1,12 @@
 var ReportMetricConfig = function () {
 
+    let numberFormatDigits;
+
     const miliToSeconds = (time) => formatNumber(time / 1000);
 
     const bytesToKilobytes = (time) => formatNumber(time / 1024);
 
-    const formatNumber = (value, digits = 2, defaultValue = 0) => Math.round(!value ? defaultValue : value, digits);
+    const formatNumber = (value, digits, defaultValue = 0) => Math.round(!value ? defaultValue : value, digits == undefined ? numberFormatDigits : digits);
 
     const defaultString = (value, defaultValue = 'n/a') => !value ? defaultValue : value;
 
@@ -172,6 +174,9 @@ var ReportMetricConfig = function () {
         },
     ];
     metrics.forEach(metric => metric.evaluate = jsonata(metric.expression).evaluate);
+
+    const settings = new Store('settings');
+    numberFormatDigits = parseInt(settings.get('formatNumberDigits'))
 
     const get = (name) => metrics.filter((metric) => metric.name == name)[0];
 

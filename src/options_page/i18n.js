@@ -14,11 +14,20 @@ this.i18n = {
     "code": {
         "en": "Code",
     },
+    "digits": {
+        "en": "Digits",
+    },
     "endpoint": {
         "en": "Endpoint",
     },
+    "format": {
+        "en": "Format",
+    },
     "lastTab": {
         "en": "Last Tab",
+    },
+    "number": {
+        "en": "Number",
     },
     "server": {
         "en": "Server",
