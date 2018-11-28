@@ -16,6 +16,14 @@ var ReportMetricConfig = function () {
 
     const metrics = [
         {
+            name: 'summaryUrl',
+            description: 'Summary Url',
+            expression: 'report.summary',
+            format: defaultString,
+            aggregate: firstValue,
+            visible: true
+        },
+        {
             name: 'testId',
             description: 'Id',
             expression: 'report.id',
