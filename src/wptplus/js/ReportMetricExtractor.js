@@ -106,11 +106,11 @@ var ReportMetricExtractor = function (report) {
             value;
 
         if (Array.isArray(page)) {
-            let metricValues = page.map(p => metric.expression.evaluate(p));
+            let metricValues = page.map(p => metric.evaluate(p));
             value = (metric.aggregate || aggregate)(metricValues);
         }
         else {
-            value = metric.expression.evaluate(page);
+            value = metric.evaluate(page);
         }
 
         return [value, metric]

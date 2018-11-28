@@ -171,7 +171,7 @@ var ReportMetricConfig = function () {
             visible: true
         },
     ];
-    metrics.forEach(metric => metric.expression = jsonata(metric.expression));
+    metrics.forEach(metric => metric.evaluate = jsonata(metric.expression).evaluate);
 
     const get = (name) => metrics.filter((metric) => metric.name == name)[0];
 
