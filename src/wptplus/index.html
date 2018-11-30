@@ -2,75 +2,74 @@
 
 <head>
     <title>Web Page Test Plus</title>
+    <link rel="stylesheet" href="../lib/uikit/css/uikit.min.css" />
     <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="../lib/spectre/spectre-exp.css">
-    <link rel="stylesheet" href="../lib/spectre/spectre-icons.css">
-    <link rel="stylesheet" href="../lib/spectre/spectre.css">
 </head>
 
 <body>
-    <div class="app-container">
-        <div class="form-group">
-            <label class="form-label" for="wptEndpoint">WPT Endpoint</label>
-            <input class="form-input" type="text" name="wptEndpoint" id="wptEndpoint" placeholder="Wpt Endpoint">
+    <div class="uk-container uk-container-expand">
+        <div class="uk-margin">
+            <label class="uk-form-label" for="wptEndpoint">WPT Endpoint</label>
+            <input class="uk-input" type="text" name="wptEndpoint" id="wptEndpoint" placeholder="Wpt Endpoint">
         </div>
-        <div class="form-group">
-            <label class="form-label" for="testCode">Test Code</label>
-            <input class="form-input" type="text" name="testCode" id="testCode" placeholder="test code (separated by comma)"
+        <div class="uk-margin">
+            <label class="uk-form-label" for="testCode">Test Code</label>
+            <input class="uk-input" type="text" name="testCode" id="testCode" placeholder="test code (separated by comma)"
                 pattern="(\w+_\w+_\w+)(,\w+_\w+_\w+)*">
         </div>
-        <div class="form-group" id="metricSelector">
-            <label class="form-label">Metrics</label>
+        <div class="uk-margin">
+            <span class="uk-form-label">Metrics</span>
+            <div id="metricSelector" class="uk-margin uk-grid-small" uk-grid>
+            </div>
         </div>
-        <div class="form-group">
-            <label class="form-label">Cached View</label>
-            <label class="form-checkbox form-inline">
-                <input type="checkbox" name="cachedView" id="firstView" value="firstView" checked>
-                <i class="form-icon"></i>First View
+        <div class="uk-margin">
+            <span class="uk-form-label">Cached View</span>
+            <div class="uk-margin uk-grid-small" uk-grid>
+                <label>
+                    <input class="uk-checkbox" type="checkbox" name="cachedView" id="firstView" value="firstView"
+                        checked> First View
+                </label>
+                <label>
+                    <input class="uk-checkbox" type="checkbox" name="cachedView" id="repeatView" value="repeatView"
+                        checked> Repeat View
+                </label>
+            </div>
+        </div>
+        <div class="uk-margin">
+            <label class="uk-form-label" for="steps">Steps</label>
+            <input class="uk-input" type="text" name="steps" id="steps" value="" placeholder="step number (separated by comma)">
+        </div>
+        <div class="uk-margin">
+            <label><input class="uk-checkbox" type="checkbox" name="filterOutliers" id="filterOutliers" value="1">
+                Filter Outliers</label>
+        </div>
+        <div class="uk-margin">
+            <label>
+                <input class="uk-checkbox" type="checkbox" name="aggregate" id="aggregate" value="1"> Aggregate Results
             </label>
-            <label class="form-checkbox form-inline">
-                <input type="checkbox" name="cachedView" id="repeatView" value="repeatView" checked>
-                <i class="form-icon"></i>Repeat View
+            <label>
+                <input class="uk-radio js-aggregationOption" type="radio" name="aggregateType" id="aggregateAverage"
+                    value="average" disabled checked> Average
+            </label>
+            <label>
+                <input class="uk-radio" type="radio" name="aggregateType" id="aggregateMedian" value="median" disabled>
+                Median
+            </label>
+            <label>
+                <input class="uk-radio js-aggregationOption" type="radio" name="aggregateType" id="aggregateStDev"
+                    value="standardDeviation" disabled> Standard Deviation
             </label>
         </div>
-        <div class="form-group">
-            <label class="form-label" for="steps">Steps</label>
-            <input class="form-input" type="text" name="steps" id="steps" value="" placeholder="step number (separated by comma)">
+        <button id="btnResult" class="uk-button uk-button-primary">Results</button>
+        <div class="uk-margin">
+            <label class="uk-form-label" for="resultCsv">CSV</label>
+            <textarea class="uk-textarea" name="resultCsv" id="resultCsv" placeholder="Result Csv" rows="4"></textarea>
         </div>
-        <div class="form-group">
-            <label class="form-checkbox">
-                <input type="checkbox" name="filterOutliers" id="filterOutliers" value="1">
-                <i class="form-icon"></i>Filter Outliers
-            </label>
-        </div>
-        <div class="form-group">
-            <label class="form-checkbox form-inline">
-                <input type="checkbox" name="aggregate" id="aggregate" value="1">
-                <i class="form-icon"></i>Aggregate Results
-            </label>
-            <label class="form-radio form-inline">
-                <input type="radio" name="aggregateType" id="aggregateAverage" value="average" class="js-aggregationOption"
-                    disabled checked>
-                <i class="form-icon"></i>Average
-            </label>
-            <label class="form-radio form-inline">
-                <input type="radio" name="aggregateType" id="aggregateMedian" value="median" class="" disabled>
-                <i class="form-icon"></i>Median
-            </label>
-            <label class="form-radio form-inline">
-                <input type="radio" name="aggregateType" id="aggregateStDev" value="standardDeviation" class="js-aggregationOption"
-                    disabled>
-                <i class="form-icon"></i>Standard Deviation
-            </label>
-        </div>
-        <button id="btnResult" class="btn btn-primary form-inline">Results</button>
-        <div class="form-group">
-            <label class="form-label" for="resultCsv">CSV</label>
-            <textarea class="form-input" name="resultCsv" id="resultCsv" placeholder="Result Csv" rows="4"></textarea>
-        </div>
-        <button id="btnCopyClipboard" class="btn btn-primary">Copy to Clipboard <i class="icon icon-download"></i></button>
+        <button id="btnCopyClipboard" class="uk-button uk-button-secundary">Copy to Clipboard <span uk-icon="download"></span></button>
     </div>
 
+    <script type="text/javascript" src="../lib/uikit/js/uikit.min.js"></script>
+    <script type="text/javascript" src="../lib/uikit/js/uikit-icons.min.js"></script>
     <script type="text/javascript" src="../lib/store.js"></script>
     <script type="text/javascript" src="../lib/jsonata.js"></script>
     <script type="text/javascript" src="js/Helpers/Math.js"></script>
