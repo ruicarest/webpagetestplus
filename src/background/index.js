@@ -17,6 +17,6 @@ chrome.browserAction.onClicked.addListener(function () {
         settings.set('lastTabEndpoint', urlInfo.endpoint || '');
         settings.set('lastTabTestCode', urlInfo.testCode || '');
 
-        chrome.tabs.create({ url: chrome.runtime.getURL('wptplus/index.html') });
+        chrome.tabs.create({ url: chrome.runtime.getURL('app/index.html') });
     });
 });

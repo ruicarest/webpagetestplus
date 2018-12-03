@@ -14,7 +14,7 @@
   "background": {
     "scripts": [
       "lib/store.js",
-      "wptplus/js/Helpers/ReportHelper.js",
+      "js/helpers/reportHelper.js",
       "background/index.js"
     ]
   },
