@@ -1,7 +1,8 @@
 window.addEvent("domready", function () {
 
     var settings = new FancySettings("WPT Plus Settings", "../icons/icon24.png");
-    
+    var appSettings = new AppSettings();
+
     // SERVER
     settings.create({
         tab: i18n.get("server"),
@@ -12,14 +13,22 @@ window.addEvent("domready", function () {
         text: i18n.get("url")
     });
 
-    // FORMAT
+    // METRICS
     settings.create({
-        tab: i18n.get("format"),
-        group: i18n.get("number"),
+        tab: i18n.get("metrics"),
+        group: i18n.get("formatNumber"),
         name: "formatNumberDigits",
         type: "text",
         label: i18n.get("digits"),
         text: i18n.get("digits")
+    });
+
+    let resetMetricOrderButton = settings.create({
+        tab: i18n.get("metrics"),
+        group: i18n.get("order"),
+        name: "resetMetricOrder",
+        type: "button",
+        text: i18n.get("resetOrder")
     });
 
     // LAST TAB
@@ -39,5 +48,9 @@ window.addEvent("domready", function () {
         type: "text",
         label: i18n.get("testCode"),
         text: i18n.get("code")
+    });
+
+    resetMetricOrderButton.addEvent('action', function () {
+        appSettings.set('metricOrder', undefined);
     });
 });

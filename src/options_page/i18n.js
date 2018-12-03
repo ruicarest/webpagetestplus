@@ -23,11 +23,23 @@ this.i18n = {
     "format": {
         "en": "Format",
     },
+    "formatNumber": {
+        "en": "Format Number",
+    },
     "lastTab": {
         "en": "Last Tab",
     },
+    "metrics": {
+        "en": "Metrics",
+    },
     "number": {
         "en": "Number",
+    },
+    "order": {
+        "en": "Order",
+    },
+    "resetOrder": {
+        "en": "Reset Order",
     },
     "server": {
         "en": "Server",

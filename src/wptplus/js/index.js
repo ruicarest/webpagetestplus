@@ -1,21 +1,7 @@
 var Index = (function () {
 
+    const metricCongig = new ReportMetricConfig();
     const reportCache = new ReportCache();
-
-    const onAggregationChange = function () {
-        let aggregationInput = this,
-            aggretateTypeInputs = getElementsByClassName("js-aggregationOption"),
-            disabledAttr = 'disabled';
-
-        Array.from(aggretateTypeInputs).forEach(i => {
-            if (aggregationInput.checked) {
-                i.removeAttribute(disabledAttr);
-            }
-            else {
-                i.setAttribute(disabledAttr, disabledAttr);
-            }
-        });
-    }
 
     const generateCsvAsync = async function () {
         let wptEndpoint = getInputValue('wptEndpoint');
@@ -42,10 +28,33 @@ var Index = (function () {
         document.execCommand("copy");
     }
 
-    const getExportMetrics = function () {
+    const onAggregationChange = function () {
+        let aggregationInput = this,
+            aggretateTypeInputs = getElementsByClassName("js-aggregationOption"),
+            disabledAttr = 'disabled';
+
+        Array.from(aggretateTypeInputs).forEach(i => {
+            if (aggregationInput.checked) {
+                i.removeAttribute(disabledAttr);
+            }
+            else {
+                i.setAttribute(disabledAttr, disabledAttr);
+            }
+        });
+    }
+
+    const onMetricMoved = function () {
+        var metrics = getExportMetrics(i => true);
+
+        metricCongig.setOrder(metrics);
+    }
+
+    const getExportMetrics = function (filterCallback) {
         let metricInputs = getInputs('metrics');
 
-        return Array.from(metricInputs).filter((i) => i.checked).map((i) => i.value);
+        filterCallback = filterCallback || (i => i.checked);
+
+        return Array.from(metricInputs).filter(filterCallback).map((i) => i.value);
     }
 
     const getFilters = function () {
@@ -120,7 +129,6 @@ var Index = (function () {
     }
 
     const renderMetricsSelector = function () {
-        let metricCongig = new ReportMetricConfig();
         let metricSelector = document.getElementById('metricSelector');
 
         metricCongig.list()
@@ -132,6 +140,8 @@ var Index = (function () {
         document.getElementById('btnResult').addEventListener('click', generateCsvAsync);
         document.getElementById('btnCopyClipboard').addEventListener('click', copyToClipboard);
         document.getElementById('aggregate').addEventListener('change', onAggregationChange);
+
+        UIkit.util.on('#metricSelector', 'moved', onMetricMoved);
     }
 
     const getCurrentTabInfo = function () {

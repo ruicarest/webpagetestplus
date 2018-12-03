@@ -1,5 +1,7 @@
 var ReportMetricConfig = function () {
 
+    const appSettings = new AppSettings();
+
     let numberFormatDigits;
 
     const miliToSeconds = (time) => formatNumber(time / 1000);
@@ -189,17 +191,38 @@ var ReportMetricConfig = function () {
             visible: true
         },
     ];
-    metrics.forEach(metric => metric.evaluate = jsonata(metric.expression).evaluate);
 
-    const settings = new Store('settings');
-    numberFormatDigits = parseInt(settings.get('formatNumberDigits'))
+    const init = function () {
+        metrics.forEach(metric => metric.evaluate = jsonata(metric.expression).evaluate);
+        order();
+
+        numberFormatDigits = parseInt(appSettings.get('formatNumberDigits'))
+    }
 
     const get = (name) => metrics.filter((metric) => metric.name == name)[0];
 
     const list = () => metrics;
 
+    const setOrder = function (metricOrder) {
+        appSettings.set('metricOrder', metricOrder);
+        order(metricOrder);
+    }
+
+    const order = function (metricOrder) {
+        metricOrder = metricOrder || appSettings.get('metricOrder');
+        metricOrder && metrics.sort((m1, m2) => {
+            let mi1 = metricOrder.indexOf(m1.name),
+                mi2 = metricOrder.indexOf(m2.name);
+
+            return mi1 - mi2;
+        });
+    }
+
+    init();
+
     return {
         get,
-        list
+        list,
+        setOrder,
     }
 }
