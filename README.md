@@ -4,7 +4,7 @@ WebPageTest Plus is an extension for Chrome browser to simplfy the extraction of
 
 ## Getting Started
 
-To run, Open src/wptplus/index.html on your Chrome browser.
+To run, Open src/app/index.html on your Chrome browser.
 
 ### To Debug
 
