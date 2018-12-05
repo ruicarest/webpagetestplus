@@ -3,15 +3,15 @@ var ReportDocument = function (wptEndpoint, reportCache = undefined) {
     const wptQuery = 'jsonResult.php?test=';
     const metricExtractor = new ReportMetricExtractor();
 
-    const getAsync = async function (testCode) {
+    const get = function (testCode) {
         if (reportCache) {
-            return reportCache.get(wptEndpoint, testCode, async () => await getTestAsync(testCode));
+            return reportCache.get(wptEndpoint, testCode, () => getTest(testCode));
         }
 
-        return await getTestAsync(testCode);
+        return getTest(testCode);
     }
 
-    const getTestAsync = async function (testCode) {
+    const getTest = function (testCode) {
         return new Promise(
             (resolve, reject) => {
                 const request = new XMLHttpRequest();
@@ -26,7 +26,7 @@ var ReportDocument = function (wptEndpoint, reportCache = undefined) {
                 request.onerror = function () {
                     reject(processResponseFail(this));
                 };
-                request.open('GET', wptEndpoint + wptQuery + testCode);
+                request.open('GET', wptEndpoint + wptQuery + testCode, true);
                 request.send();
             });
     }
@@ -110,7 +110,7 @@ var ReportDocument = function (wptEndpoint, reportCache = undefined) {
     }
 
     return {
-        getAsync,
+        get,
         exportCsv,
         exportHeader
     }

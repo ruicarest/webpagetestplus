@@ -3,7 +3,7 @@ var Index = (function () {
     const metricCongig = new ReportMetricConfig();
     const reportCache = new ReportCache();
 
-    const generateCsvAsync = async function () {
+    const generateCsv = function () {
         let wptEndpoint = getInputValue('wptEndpoint');
         let testCodes = getInputValue('testCode').split(',');
 
@@ -11,7 +11,7 @@ var Index = (function () {
 
         let tasks = testCodes.map(testCode => {
             return reportDocument
-                .getAsync(testCode)
+                .get(testCode)
                 .catch((status) => {
                     console.log(status);
                 });
@@ -137,7 +137,7 @@ var Index = (function () {
     }
 
     const bindEvents = function () {
-        document.getElementById('btnResult').addEventListener('click', generateCsvAsync);
+        document.getElementById('btnResult').addEventListener('click', generateCsv);
         document.getElementById('btnCopyClipboard').addEventListener('click', copyToClipboard);
         document.getElementById('aggregate').addEventListener('change', onAggregationChange);
 
@@ -156,7 +156,7 @@ var Index = (function () {
     getCurrentTabInfo()
 
     return {
-        generateCsvAsync,
+        generateCsv,
         copyToClipboard
     };
 })()
