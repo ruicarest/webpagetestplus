@@ -1,11 +1,11 @@
-var ReportDocument = function (wptEndpoint, reportCache = undefined) {
+var ReportDocument = function (wptEndpoint, cache = undefined) {
 
     const wptQuery = 'jsonResult.php?test=';
     const metricExtractor = new ReportMetricExtractor();
 
     const get = function (testCode) {
-        if (reportCache) {
-            return reportCache.get(wptEndpoint, testCode, () => getTest(testCode));
+        if (cache) {
+            return cache.get(wptEndpoint, testCode, () => getTest(testCode));
         }
 
         return getTest(testCode);

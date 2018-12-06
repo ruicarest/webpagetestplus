@@ -1,13 +1,13 @@
 var Index = (function () {
 
     const metricCongig = new ReportMetricConfig();
-    const reportCache = new ReportCache();
+    const cache = new MemoryCache();
 
     const generateCsv = function () {
         let wptEndpoint = getInputValue('wptEndpoint');
         let testCodes = getInputValue('testCode').split(',');
 
-        let reportDocument = new ReportDocument(wptEndpoint, reportCache);
+        let reportDocument = new ReportDocument(wptEndpoint, cache);
 
         let tasks = testCodes.map(testCode => {
             return reportDocument
