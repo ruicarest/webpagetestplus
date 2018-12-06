@@ -1,7 +1,8 @@
 var Index = (function () {
 
+    const settings = new AppSettings();
     const metricCongig = new ReportMetricConfig();
-    const cache = new MemoryCache();
+    const cache = settings.get('useReportCache') ? new MemoryCache() : undefined;
 
     const generateCsv = function () {
         let wptEndpoint = getInputValue('wptEndpoint');

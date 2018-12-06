@@ -31,6 +31,15 @@ window.addEvent("domready", function () {
         text: i18n.get("resetOrder")
     });
 
+    // CACHE
+    settings.create({
+        tab: i18n.get("server"),
+        group: i18n.get("cache"),
+        name: "useReportCache",
+        type: "checkbox",
+        label: i18n.get("useReportCache"),
+    });
+
     // LAST TAB
     settings.create({
         tab: i18n.get("lastTab"),

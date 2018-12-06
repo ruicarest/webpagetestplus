@@ -10,7 +10,9 @@ this.i18n = {
         "en": "No matches were found.",
     },
     
-    
+    "cache": {
+        "en": "Cache",
+    },
     "code": {
         "en": "Code",
     },
@@ -38,6 +40,9 @@ this.i18n = {
     "order": {
         "en": "Order",
     },
+    "reports": {
+        "en": "Reports",
+    },
     "resetOrder": {
         "en": "Reset Order",
     },
@@ -46,6 +51,9 @@ this.i18n = {
     },
     "testCode": {
         "en": "Test Code",
+    },
+    "useReportCache": {
+        "en": "Use Report Cache",
     },
     "url": {
         "en": "Url",

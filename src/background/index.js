@@ -7,6 +7,10 @@ chrome.runtime.onInstalled.addListener(function () {
     if (!settings.get('formatNumberDigits')) {
         settings.set('formatNumberDigits', '2');
     }
+
+    if (settings.get('useReportCache') == undefined) {
+        settings.set('useReportCache', true);
+    }
 });
 
 chrome.browserAction.onClicked.addListener(function () {
