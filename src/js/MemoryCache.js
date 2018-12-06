@@ -19,15 +19,15 @@ var MemoryCache = function (cacheKeyGenerator) {
         let callback = getLastArgument([...arguments]),
             cacheKey = cacheKeyFunc(getCacheKeyArguments([...arguments]));
 
-        let reportDoc = memory[cacheKey];
-        if (reportDoc) {
-            return reportDoc;
+        let obj = memory[cacheKey];
+        if (obj) {
+            return obj;
         }
 
-        reportDoc = callback();
-        if (reportDoc) {
-            set(cacheKey, reportDoc);
-            return reportDoc;
+        obj = callback();
+        if (obj) {
+            set(cacheKey, obj);
+            return obj;
         }
     }
 
