@@ -14,6 +14,7 @@
   "background": {
     "scripts": [
       "lib/store.js",
+      "js/AppSettings.js",
       "js/helpers/reportHelper.js",
       "background/index.js"
     ]

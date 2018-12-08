@@ -150,9 +150,9 @@ var Index = (function () {
     }
 
     const getCurrentTabInfo = function () {
-        let settings = new Store("settings");
+        let settings = new AppSettings();
 
-        document.getElementById("wptEndpoint").value = settings.get('lastTabEndpoint');
+        document.getElementById("wptEndpoint").value = settings.get('lastTabEndpoint') || settings.get('endpoint');
         document.getElementById("testCode").value = settings.get('lastTabTestCode');
     }
 

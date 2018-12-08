@@ -1,26 +1,28 @@
-chrome.runtime.onInstalled.addListener(function () {
-    let settings = new Store("settings");
-    if (!settings.get('endpoint')) {
-        settings.set('endpoint', 'https://www.webpagetest.org/');
-    }
+(function () {
+    let settings = new AppSettings();
 
-    if (!settings.get('formatNumberDigits')) {
-        settings.set('formatNumberDigits', '2');
-    }
+    chrome.runtime.onInstalled.addListener(function () {
+        if (!settings.get('endpoint')) {
+            settings.set('endpoint', 'https://www.webpagetest.org/');
+        }
 
-    if (settings.get('useReportCache') == undefined) {
-        settings.set('useReportCache', true);
-    }
-});
+        if (!settings.get('formatNumberDigits')) {
+            settings.set('formatNumberDigits', '2');
+        }
 
-chrome.browserAction.onClicked.addListener(function () {
-    chrome.tabs.getSelected(null, function (tab) {
-        let urlInfo = ReportHelper.getUrlInfo(tab.url);
-        let settings = new Store("settings");
-
-        settings.set('lastTabEndpoint', urlInfo.endpoint || '');
-        settings.set('lastTabTestCode', urlInfo.testCode || '');
-
-        chrome.tabs.create({ url: chrome.runtime.getURL('app/index.html') });
+        if (settings.get('useReportCache') == undefined) {
+            settings.set('useReportCache', true);
+        }
     });
-});
+
+    chrome.browserAction.onClicked.addListener(function () {
+        chrome.tabs.getSelected(null, function (tab) {
+            let urlInfo = ReportHelper.getUrlInfo(tab.url);
+
+            settings.set('lastTabEndpoint', urlInfo.endpoint || '');
+            settings.set('lastTabTestCode', urlInfo.testCode || '');
+
+            chrome.tabs.create({ url: chrome.runtime.getURL('app/index.html') });
+        });
+    });
+})()
