@@ -8,10 +8,10 @@ var Index = (function () {
         let wptEndpoint = getInputValue('wptEndpoint');
         let testCodes = getInputValue('testCode').split(',');
 
-        let reportDocument = new ReportDocument(wptEndpoint, cache);
+        let reportExporter = new ReportExporter(wptEndpoint, cache);
 
         let tasks = testCodes.map(testCode => {
-            return reportDocument
+            return reportExporter
                 .get(testCode)
                 .catch((status) => {
                     console.log(status);
@@ -19,7 +19,7 @@ var Index = (function () {
         })
 
         Promise.all(tasks).then(reports => {
-            setResult(reportDocument.exportCsv(reports, { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() }));
+            setResult(reportExporter.exportCsv(reports, { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() }));
         })
     }
 

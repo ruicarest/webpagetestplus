@@ -1,117 +1,80 @@
-var ReportDocument = function (wptEndpoint, cache = undefined) {
+var ReportDocument = function (report) {
 
-    const wptQuery = 'jsonResult.php?test=';
-    const metricExtractor = new ReportMetricExtractor();
+    let stdevData
+    let averageData;
 
-    const get = function (testCode) {
-        if (cache) {
-            return cache.get(wptEndpoint, testCode, () => getTest(testCode));
-        }
-
-        return getTest(testCode);
-    }
-
-    const getTest = function (testCode) {
-        return new Promise(
-            (resolve, reject) => {
-                const request = new XMLHttpRequest();
-                request.responseType = 'json';
-                request.onload = function () {
-                    if (this.status === 200) {
-                        resolve(processResponseOk(this));
-                    } else {
-                        reject(processResponseFail(this));
+    const steps = function () {
+        let result = [];
+        let runs = report.runs;
+        for (let run in runs) {
+            let cachedViews = runs[run];
+            for (let cachedView in cachedViews) {
+                let test = cachedViews[cachedView];
+                if (test.steps) {
+                    for (let i = 0; i < test.steps.length; i++) {
+                        var step = test.steps[i]
+                        result.push(createStep.bind(this)(step, run, cachedView, i + 1));
                     }
-                };
-                request.onerror = function () {
-                    reject(processResponseFail(this));
-                };
-                request.open('GET', wptEndpoint + wptQuery + testCode, true);
-                request.send();
-            });
-    }
-
-    const exportCsv = function (reports, options, header = true) {
-        let csv = [];
-        if (header) {
-            csv.push(exportHeader(options.metrics));
-        }
-
-        reports.forEach(report => {
-            let aggOperation;
-            let metricExtractor = new ReportMetricExtractor(report);
-
-            // from
-            let pages = Queryable(metricExtractor.pages());
-
-            // where
-            pages = pages.filter(page => metricExtractor.accept(page, options.filters));
-
-            // group by
-            if (options.aggregate.type) {
-                pages = pages.groupBy(pageKeyGetter);
-                aggOperation = aggregateOperation(options.aggregate.type);
-            } else {
-                pages = pages.toArray();
+                }
+                else {
+                    result.push(createStep.bind(this)(test, run, cachedView, 1));
+                }
             }
-
-            // select
-            pages.forEach(pageElem => {
-                let metrics = metricExtractor.values(pageElem, options.metrics, aggOperation);
-                csv.push(metrics.reduce(csvColumnReducer, ''))
-            });
-        });
-
-        return csv.reduce(csvRowReducer, '');
-    }
-
-    const exportHeader = function (exportMetrics) {
-        return metricExtractor
-            .headers(exportMetrics)
-            .reduce(csvColumnReducer, '');
-    }
-
-    const pageKeyGetter = function (page) {
-        return metricExtractor
-            .values(page, ['cachedView', 'step'])
-            .join('_');
-    }
-
-    const aggregateOperation = function (aggregateType) {
-        switch (aggregateType) {
-            case 'average':
-                return Math.avg;
-
-            case 'median':
-                return Math.median;
-
-            case 'standardDeviation':
-                return Math.stdev;
-
-            default:
-                return;
         }
+
+        return result;
     }
 
-    const processResponseOk = function (response) {
-        return response.response.data;
+    const aggregations = function (aggregationType, filters) {
+        if (!stdevData || !averageData) {
+            stdevData = _aggregations('standardDeviation');
+            averageData = _aggregations('average');
+        }
+
+        let data;
+        if (aggregationType == 'standardDeviation') {
+            data = stdevData;
+        } else {
+            data = averageData;
+        }
+
+        if (filters) {
+            return data.filter(step => step.accept(filters));
+        }
+
+        return data;
     }
 
-    const processResponseFail = function (response) {
-        return new Error(response.statusText);
+    const _aggregations = function (aggregationType) {
+        let result = [];
+        let cachedViews = report[aggregationType];
+        for (let cachedView in cachedViews) {
+            let test = cachedViews[cachedView];
+            if (test.steps) {
+                for (let i = 0; i < test.steps.length; i++) {
+                    var step = test.steps[i]
+                    result.push(createStep.bind(this)(step, 0, cachedView, i));
+                }
+            }
+            else {
+                result.push(createStep.bind(this)(test, 0, cachedView, 1));
+            }
+        }
+
+        return result;
     }
 
-    const csvColumnReducer = function (line, value) {
-        return (line ? line + '\t' : '') + value;
-    }
+    const createStep = function (stepObj, run, cachedView, step) {
+        stepObj.report = report;
+        stepObj.run = run;
+        stepObj.cachedView = cachedView;
+        stepObj.step = step;
 
-    const csvRowReducer = function (csv, line) {
-        return (csv ? csv + '\n' : '') + line;
+        return new ReportStep(this, stepObj);
     }
 
     return {
-        get,
-        exportCsv,
-        exportHeader
+        steps,
+        aggregations
     }
 }
