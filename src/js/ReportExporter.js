@@ -53,7 +53,7 @@ var ReportExporter = function (wptEndpoint, cache = undefined) {
         // group by
         if (options.aggregate.type) {
             let aggregateOp = aggregateOperation(options.aggregate.type);
-            steps = steps.groupBy(pageKeyGetter);
+            steps = steps.groupBy(options.aggregate.mergeTest ? pageKeyGetter : pageKeyGetterByTest);
             steps.forEach((v, k, m) => {
                 m.set(k, new ReportStepGroup(v, aggregateOp))
             });
@@ -73,8 +73,13 @@ var ReportExporter = function (wptEndpoint, cache = undefined) {
             .reduce(csvColumnReducer, '');
     }
 
-    const pageKeyGetter = function (step) {
+    const pageKeyGetterByTest = function (step) {
         return step.values(['testId', 'cachedView', 'step'])
+            .join('_');
+    }
+
+    const pageKeyGetter = function (step) {
+        return step.values(['cachedView', 'step'])
             .join('_');
     }
 

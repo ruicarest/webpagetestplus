@@ -82,12 +82,16 @@ var Index = (function () {
     }
 
     const getAggregation = function () {
-        let aggregateValue = getCheckedInputValue("aggregate");
         let aggregate = {};
-        if (aggregateValue == "1") {
+
+        let aggregateValue = getCheckedInputValue("aggregate");
+        if (aggregateValue == '1') {
             let aggregateType = getCheckedInputValue("aggregateType");
             aggregate.type = aggregateType;
         }
+
+        let mergeTestValue = getCheckedInputValue('mergeTest')
+        aggregate.mergeTest = mergeTestValue == 'merge';
 
         return aggregate;
     }
