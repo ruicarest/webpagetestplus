@@ -31,9 +31,9 @@ var ReportExporter = function (wptEndpoint, cache = undefined) {
             });
     }
 
-    const exportCsv = function (reports, options, header = true) {
+    const exportCsv = function (reports, options) {
         let csv = [];
-        if (header) {
+        if (options.filters.header) {
             csv.push(exportHeader(options.metrics));
         }
 

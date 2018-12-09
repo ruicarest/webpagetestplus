@@ -78,6 +78,9 @@ var Index = (function () {
             filters.outliers = true;
         }
 
+        let header = getCheckedInputValue('header');
+        filters.header = (header == 'header');
+
         return filters;
     }
 
