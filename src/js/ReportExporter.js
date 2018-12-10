@@ -26,7 +26,7 @@ var ReportExporter = function (endpoint, cache = undefined) {
                 request.onerror = function () {
                     reject(processResponseFail(this));
                 };
-                request.open('GET', endpoint + endpointQuery + testCode, true);
+                request.open('GET', getJsonResultUrl(testCode), true);
                 request.send();
             });
     }
@@ -113,6 +113,10 @@ var ReportExporter = function (endpoint, cache = undefined) {
 
     const csvRowReducer = function (csv, line) {
         return (csv ? csv + '\n' : '') + line;
+    }
+
+    const getJsonResultUrl = function (testCode) {
+        return new URL(endpointQuery + testCode, endpoint).href;
     }
 
     return {
