@@ -1,11 +1,11 @@
-var ReportExporter = function (wptEndpoint, cache = undefined) {
+var ReportExporter = function (endpoint, cache = undefined) {
 
-    const wptQuery = 'jsonResult.php?test=';
+    const endpointQuery = 'jsonResult.php?test=';
     const metricConfig = new ReportMetricConfig();
 
     const get = function (testCode) {
         if (cache) {
-            return cache.get(wptEndpoint, testCode, () => getTest(testCode));
+            return cache.get(endpoint, testCode, () => getTest(testCode));
         }
 
         return getTest(testCode);
@@ -26,7 +26,7 @@ var ReportExporter = function (wptEndpoint, cache = undefined) {
                 request.onerror = function () {
                     reject(processResponseFail(this));
                 };
-                request.open('GET', wptEndpoint + wptQuery + testCode, true);
+                request.open('GET', endpoint + endpointQuery + testCode, true);
                 request.send();
             });
     }

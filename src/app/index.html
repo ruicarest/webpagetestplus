@@ -8,74 +8,204 @@
 
 <body>
     <div class="uk-container uk-container-expand">
-        <div class="uk-margin">
-            <label class="uk-form-label" for="wptEndpoint">WPT Endpoint</label>
-            <input class="uk-input" type="text" name="wptEndpoint" id="wptEndpoint" placeholder="Wpt Endpoint">
-        </div>
-        <div class="uk-margin">
-            <label class="uk-form-label" for="testCode">Test Code</label>
-            <input class="uk-input uk-input-validation" type="text" name="testCode" id="testCode" placeholder="test code (separated by comma)"
-                pattern="(\w+_\w+_\w+)(,\w+_\w+_\w+)*">
-        </div>
-        <div class="uk-margin">
-            <span class="uk-form-label">Metrics</span>
-            <div id="metricSelector" class="uk-margin uk-grid-small" uk-grid uk-sortable>
-            </div>
-        </div>
-        <div class="uk-margin">
-            <span class="uk-form-label">Cached View</span>
-            <div class="uk-margin uk-grid-small" uk-grid>
-                <label>
-                    <input class="uk-checkbox" type="checkbox" name="cachedView" id="firstView" value="firstView"
-                        checked> First View
-                </label>
-                <label>
-                    <input class="uk-checkbox" type="checkbox" name="cachedView" id="repeatView" value="repeatView"
-                        checked> Repeat View
-                </label>
-            </div>
-        </div>
-        <div class="uk-margin">
-            <label class="uk-form-label" for="steps">Steps</label>
-            <input class="uk-input" type="text" name="steps" id="steps" value="" placeholder="step number (separated by comma)">
-        </div>
-        <div class="uk-margin">
-            <label><input class="uk-checkbox" type="checkbox" name="filterOutliers" id="filterOutliers" value="1">
-                Filter Outliers</label>
-        </div>
-        <div class="uk-margin">
-            <label>
-                <input class="uk-checkbox" type="checkbox" name="aggregate" id="aggregate" value="1"> Aggregate Results
-            </label>
-            <label>
-                <input class="uk-checkbox js-aggregationOption" type="checkbox" name="mergeTest" id="mergeTest" value="merge"
-                    disabled> Merge Tests
-            </label>
-            <label>
-                <input class="uk-radio js-aggregationOption" type="radio" name="aggregateType" id="aggregateAverage"
-                    value="average" disabled checked> Average
-            </label>
-            <label>
-                <input class="uk-radio" type="radio" name="aggregateType" id="aggregateMedian" value="median" disabled>
-                Median
-            </label>
-            <label>
-                <input class="uk-radio js-aggregationOption" type="radio" name="aggregateType" id="aggregateStDev"
-                    value="standardDeviation" disabled> Standard Deviation
-            </label>
-        </div>
-        <div class="uk-margin">
-            <label>
-                <input class="uk-checkbox" type="checkbox" name="header" id="header" value="header" checked>
-                Export Header
-            </label>
-        </div>
-        <button id="btnResult" class="uk-button uk-button-primary">Results</button>
-        <div class="uk-margin">
-            <label class="uk-form-label" for="resultCsv">CSV</label>
-            <textarea class="uk-textarea" name="resultCsv" id="resultCsv" placeholder="Result Csv" rows="4"></textarea>
-        </div>
-        <button id="btnCopyClipboard" class="uk-button uk-button-secundary">Copy to Clipboard <span uk-icon="download"></span></button>
+        <ul id="tabActions" class="uk-child-width-expand" uk-tab>
+            <li id="actionRun"><a href="#run">Run</a></li>
+            <li id="actionExport"><a href="#export">Export</a></li>
+        </ul>
+        <ul class="uk-switcher">
+            <li>
+                <div class="uk-form-horizontal">
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="runEndpoint">WPT Endpoint</label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input" type="text" name="runEndpoint" id="runEndpoint" placeholder="Endpoint">
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="runEndpoint">WPT API Key</label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input" type="text" name="runWptKey" id="runEndpoint" placeholder="API Key">
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="location">Test Location</label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input" type="text" name="location" id="location" placeholder="Test Location">
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <span class="uk-form-label" for="browser">Browser</span>
+                        <div class="uk-form-controls uk-form-controls-text">
+                            <label>
+                                <input class="uk-checkbox" type="checkbox" name="browser" id="browserChrome" value="chrome"
+                                    checked> Chrome
+                            </label>
+                            <label>
+                                <input class="uk-checkbox" type="checkbox" name="browser" id="browserFirefox" value="firefox">
+                                Firefox
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                            <span class="uk-form-label">Emulate Browser</span>
+                            <div class="uk-form-controls uk-form-controls-text">
+                                <label>
+                                    <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
+                                        value="chrome" checked> Chrome
+                                </label>
+                                <label>
+                                    <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
+                                        value="MotoG4"> Motorola G (gen 4)
+                                </label>
+                                <label>
+                                    <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
+                                        value="Nexus5"> Nexus 5
+                                </label>
+                                <label>
+                                    <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
+                                        value="Pixel2"> Google Pixel 2
+                                </label>
+                                <label>
+                                    <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
+                                        value="GalaxyS8"> Samsung Galaxy S8/S8+/Note 8
+                                </label>
+                                <label>
+                                    <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
+                                        value="AndroidOne"> Android One
+                                </label>
+                                <label>
+                                    <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
+                                        value="iPhone5c"> iPhone 5C
+                                </label>
+                                <label>
+                                    <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
+                                        value="iPhone6"> iPhone 6/7/8
+                                </label>
+                                <label>
+                                    <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
+                                        value="iPad"> iPad
+                                </label>
+                            </div>
+                        </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="runs">Runs</label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input" type="number" min="1" max="9" value="1" name="runs" id="runs">
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <span class="uk-form-label">Cached View</span>
+                        <div class="uk-form-controls uk-form-controls-text">
+                            <label>
+                                <input class="uk-checkbox" type="checkbox" name="runCachedView" id="runFirstView" value="firstView"
+                                    checked> First View
+                            </label>
+                            <label>
+                                <input class="uk-checkbox" type="checkbox" name="runCachedView" id="runRepeatView"
+                                    value="repeatView" checked> Repeat View
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <span class="uk-form-label">Video</span>
+                        <div class="uk-form-controls uk-form-controls-text">
+                            <label>
+                                <input class="uk-checkbox" type="checkbox" name="video" id="video" value="video">
+                                Capture
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <span class="uk-form-label">Ignore SSL Certificate Errors</span>
+                        <div class="uk-form-controls uk-form-controls-text">
+                            <label>
+                                <input class="uk-checkbox" type="checkbox" name="ignoreSslErrors" id="ignoreSslErrors"
+                                    value="ignore"> Ignore
+                            </label>
+                        </div>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="script">Script</label>
+                        <div class="uk-form-controls">
+                            <textarea class="uk-textarea" name="script" id="script" placeholder="Url or Script" rows="7"></textarea>
+                        </div>
+                    </div>
+                    <button id="btnRun" class="uk-button uk-button-primary" disabled>Start Runs</button>
+                </div>
+            </li>
+            <li>
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="exportEndpoint">WPT Endpoint</label>
+                    <input class="uk-input" type="text" name="exportEndpoint" id="exportEndpoint" placeholder="Endpoint">
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="testCode">Test Code</label>
+                    <input class="uk-input uk-input-validation" type="text" name="testCode" id="testCode" placeholder="test code (separated by comma)"
+                        pattern="(\w+_\w+_\w+)(,\w+_\w+_\w+)*">
+                </div>
+                <div class="uk-margin">
+                    <span class="uk-form-label">Metrics</span>
+                    <div id="metricSelector" class="uk-margin uk-grid-small" uk-grid uk-sortable>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <span class="uk-form-label">Cached View</span>
+                    <div class="uk-margin uk-grid-small" uk-grid>
+                        <label>
+                            <input class="uk-checkbox" type="checkbox" name="exportCachedView" id="exportFirstView"
+                                value="firstView" checked> First View
+                        </label>
+                        <label>
+                            <input class="uk-checkbox" type="checkbox" name="exportCachedView" id="exportRepeatView"
+                                value="repeatView" checked> Repeat View
+                        </label>
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="steps">Steps</label>
+                    <input class="uk-input" type="text" name="steps" id="steps" value="" placeholder="step number (separated by comma)">
+                </div>
+                <div class="uk-margin">
+                    <label><input class="uk-checkbox" type="checkbox" name="filterOutliers" id="filterOutliers" value="1">
+                        Filter Outliers</label>
+                </div>
+                <div class="uk-margin">
+                    <label>
+                        <input class="uk-checkbox" type="checkbox" name="aggregate" id="aggregate" value="1"> Aggregate
+                        Results
+                    </label>
+                    <label>
+                        <input class="uk-checkbox js-aggregationOption" type="checkbox" name="mergeTest" id="mergeTest"
+                            value="merge" disabled> Merge Tests
+                    </label>
+                    <label>
+                        <input class="uk-radio js-aggregationOption" type="radio" name="aggregateType" id="aggregateAverage"
+                            value="average" disabled checked> Average
+                    </label>
+                    <label>
+                        <input class="uk-radio" type="radio" name="aggregateType" id="aggregateMedian" value="median"
+                            disabled>
+                        Median
+                    </label>
+                    <label>
+                        <input class="uk-radio js-aggregationOption" type="radio" name="aggregateType" id="aggregateStDev"
+                            value="standardDeviation" disabled> Standard Deviation
+                    </label>
+                </div>
+                <div class="uk-margin">
+                    <label>
+                        <input class="uk-checkbox" type="checkbox" name="header" id="header" value="header" checked>
+                        Export Header
+                    </label>
+                </div>
+                <button id="btnResult" class="uk-button uk-button-primary">Results</button>
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="resultCsv">CSV</label>
+                    <textarea class="uk-textarea" name="resultCsv" id="resultCsv" placeholder="Result Csv" rows="4"></textarea>
+                </div>
+                <button id="btnCopyClipboard" class="uk-button uk-button-secundary">Copy to Clipboard <span uk-icon="download"></span></button>
+            </li>
+        </ul>
     </div>
 
     <script type="text/javascript" src="../lib/uikit/js/uikit.min.js"></script>
@@ -94,6 +224,8 @@
     <script type="text/javascript" src="../js/ReportStepGroup.js"></script>
     <script type="text/javascript" src="../js/ReportDocument.js"></script>
     <script type="text/javascript" src="../js/ReportExporter.js"></script>
+    <script type="text/javascript" src="runPage.js"></script>
+    <script type="text/javascript" src="exportPage.js"></script>
     <script type="text/javascript" src="index.js"></script>
 </body>
 
