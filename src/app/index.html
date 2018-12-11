@@ -36,7 +36,7 @@
                             <select class="uk-select" name="location" id="location">
                             </select>
                             <script type="template" id="locationOption">
-                                <option ${'default' ? 'selected' : ''}>${'label'} (${'location'})</option>
+                                <option {{ 'selected' if default }}>{{ label }} ({{ location }})</option>
                             </script>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                             <div>
                                 <span uk-icon="icon: table; ratio: 0.5"></span>
                                 <label>
-                                    <input class="uk-checkbox" type="checkbox" name="metrics" id="checkbox_${'name'}" value="${'name'}" ${'checked ? "checked" : ""'}> ${'description'}
+                                    <input class="uk-checkbox" type="checkbox" name="metrics" id="checkbox_{{ name }}" value="{{ name }}" {{ "checked" if checked }}> {{ description }}
                                 </label>
                             </div>
                         </script>
@@ -249,7 +249,8 @@
     <script type="text/javascript" src="../js/helpers/reportHelper.js"></script>
     <script type="text/javascript" src="../js/helpers/formHelper.js"></script>
     <script type="text/javascript" src="../js/helpers/htmlHelper.js"></script>
-    <script type="text/javascript" src="../lib/template.js"></script>
+    <script type="text/javascript" src="../lib/nunjucks.js"></script>
+    <script type="text/javascript" src="../js/Template.js"></script>
     <script type="text/javascript" src="../js/AppSettings.js"></script>
     <script type="text/javascript" src="../js/MemoryCache.js"></script>
     <script type="text/javascript" src="../js/ServerLocation.js"></script>
