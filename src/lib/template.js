@@ -2,6 +2,13 @@ var Template = (function () {
 
     const templates = {};
 
+    const init = function () {
+        let templates = document.querySelectorAll('script[type=template][id]');
+        for (let template of templates) {
+            add(template.id, eval('create`' + template.innerText + '`'));
+        }
+    }
+
     const create = function (strings, ...keys) {
         let evalKeys = keys.map(k => [k, jsonata(k)]) 
         return (function (...values) {
@@ -22,6 +29,8 @@ var Template = (function () {
     const render = function (name, data) {
         return templates[name](data);
     }
+
+    init();
 
     return {
         add,
