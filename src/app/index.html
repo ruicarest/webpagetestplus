@@ -35,62 +35,70 @@
                         <div class="uk-form-controls">
                             <select class="uk-select" name="location" id="location">
                             </select>
-                            <script type="template" id="locationOption">
-                                <option {{ 'selected' if default }}>{{ label }} ({{ location }})</option>
+                            <script type="template" id="locationOptions">
+                            {% for group, locations in items  %}
+                                <optgroup label="{{ group }}">
+                                    {% for location in locations  %}
+                                        <option {{ 'selected' if location.default }} value="{{ location.location }}">{{ location.label }} ({{ location.location }})</option>
+                                    {% endfor  %}
+                                </optgroup>
+                            {% endfor  %}
                             </script>
+                            <!-- <option {{ 'selected' if default }}>{{ label }} ({{ location }})</option> -->
                         </div>
                     </div>
                     <div class="uk-margin">
                         <span class="uk-form-label">Browser</span>
-                        <div class="uk-form-controls-text uk-grid-small" uk-grid>
-                            <label>
-                                <input class="uk-checkbox" type="checkbox" name="browser" id="browserChrome" value="chrome"
-                                    checked> Chrome
-                            </label>
-                            <label>
-                                <input class="uk-checkbox" type="checkbox" name="browser" id="browserFirefox" value="firefox">
-                                Firefox
-                            </label>
+                        <div id="runBrowsers" class="uk-form-controls-text uk-grid-small" uk-grid>
+                            <label><input class="uk-checkbox" type="checkbox"> Not Available</label>
                         </div>
+                        <script type="template" id="checkboxBrowser">
+                        {% for value in browsers  %}
+                            <label>
+                                <input class="uk-checkbox" type="checkbox" name="browser" id="browserChrome" value="{{ value }}" {{ "checked" if loop.first }}> {{ value }}
+                            </label>
+                        {% else%}
+                            <label><input class="uk-checkbox" type="checkbox"> Not Available</label>
+                        {% endfor  %}
+                        </script>
                     </div>
                     <div class="uk-margin">
-                        <span class="uk-form-label">Emulate Browser</span>
+                        <span class="uk-form-label">
+                            Emulate Browser
+                            <input class="uk-checkbox" type="checkbox" name="emulate" id="emulate" value="emulate">
+                        </span>
                         <div class="uk-form-controls-text uk-grid-small" uk-grid>
                             <label>
-                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
-                                    value="chrome" checked> Chrome
+                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" value="MotoG4" disabled>
+                                Motorola G (gen 4)
                             </label>
                             <label>
-                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
-                                    value="MotoG4"> Motorola G (gen 4)
+                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" value="Nexus5" disabled>
+                                Nexus 5
                             </label>
                             <label>
-                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
-                                    value="Nexus5"> Nexus 5
+                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" value="Pixel2" disabled>
+                                Google Pixel 2
                             </label>
                             <label>
-                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
-                                    value="Pixel2"> Google Pixel 2
+                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" value="GalaxyS8" disabled>
+                                Samsung Galaxy S8/S8+/Note 8
                             </label>
                             <label>
-                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
-                                    value="GalaxyS8"> Samsung Galaxy S8/S8+/Note 8
+                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" value="AndroidOne" disabled>
+                                Android One
                             </label>
                             <label>
-                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
-                                    value="AndroidOne"> Android One
+                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" value="iPhone5c" disabled>
+                                iPhone 5C
                             </label>
                             <label>
-                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
-                                    value="iPhone5c"> iPhone 5C
+                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" value="iPhone6" disabled>
+                                iPhone 6/7/8
                             </label>
                             <label>
-                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
-                                    value="iPhone6"> iPhone 6/7/8
-                            </label>
-                            <label>
-                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" id="emulateBrowser"
-                                    value="iPad"> iPad
+                                <input class="uk-checkbox" type="checkbox" name="emulateBrowser" value="iPad" disabled>
+                                iPad
                             </label>
                         </div>
                     </div>
