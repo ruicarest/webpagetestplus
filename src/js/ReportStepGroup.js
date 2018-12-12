@@ -1,9 +1,13 @@
-var ReportStepGroup = function (stepObjs, aggregateOp) {
+var ReportStepGroup = function (stepsData, aggregateOp) {
 
     const metricConfig = new ReportMetricConfig();
 
+    const steps = function () {
+        return stepsData;
+    }
+    
     const accept = function (filters) {
-        return stepObjs.reduce((isAccept, stepObj) => isAccept && stepObj.accept(filters), false);
+        return stepsData.reduce((isAccept, stepObj) => isAccept && stepObj.accept(filters), false);
     }
 
     const getValue = function (metricName) {
@@ -20,7 +24,7 @@ var ReportStepGroup = function (stepObjs, aggregateOp) {
 
     const get = function (metricName) {
         let metric = metricConfig.get(metricName),
-            metricValues = stepObjs.map(stepObj => stepObj.getValue(metricName));
+            metricValues = stepsData.map(stepObj => stepObj.getValue(metricName));
 
         return [(metric.aggregate || aggregateOp)(metricValues), metric];
     }
@@ -30,6 +34,7 @@ var ReportStepGroup = function (stepObjs, aggregateOp) {
     }
 
     return {
+        steps,
         accept,
         values,
         getValue,

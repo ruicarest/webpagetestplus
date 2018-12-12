@@ -57,6 +57,17 @@ var ReportExporter = function (endpoint, cache = undefined) {
             steps.forEach((v, k, m) => {
                 m.set(k, new ReportStepGroup(v, aggregateOp))
             });
+
+            if (options.aggregate.type == 'median') {
+                for (let entry of steps) {
+                    let [group, stepGroup] = entry;
+                    let items = stepGroup.steps().sort((a, b) => a.getValue('plt') - b.getValue('plt'));
+                    var medianIndex = Math.round(items.length / 2) - 1;
+                    steps.set(group, items[medianIndex]);
+                }
+
+                steps = [...steps.values()];
+            }
         }
 
         // select

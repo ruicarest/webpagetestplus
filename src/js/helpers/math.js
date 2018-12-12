@@ -9,7 +9,7 @@
     }
 
     const round = Math.round;
-    Math.round = (number, digits) => {
+    Math.round = (number, digits = 0) => {
         let decimals = Math.pow(10, digits);
 
         return round(number * decimals) / decimals
