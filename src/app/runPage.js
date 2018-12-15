@@ -6,16 +6,25 @@ var RunPage = (function () {
         document.getElementById("runEndpoint").value = endpoint || settings.get('endpoint');
 
         bindEvents();
-        refreshLocations();
+        onRefreshLocationClick();
     }
 
     const bindEvents = function () {
-        document.getElementById('refreshLocations').addEventListener('click', refreshLocations);
-        document.getElementById("location").addEventListener('change', refreshBrowsers);
-        document.getElementById('emulate').addEventListener('change', onEmulateChange);
+        document.getElementById('iconRefreshLocations').addEventListener('click', onRefreshLocationClick);
+        document.getElementById('chooseLocation').addEventListener('change', onChooseLocationChange);
+        document.getElementById('checkboxEmulate').addEventListener('change', onEmulateChange);
+        document.getElementById('btnRun').addEventListener('click', onRunClick);
     }
 
-    const refreshLocations = function () {
+    const onRunClick = function () {
+        var data = getRunParamters();
+    }
+
+    const getRunParamters = function () {
+
+    }
+
+    const onRefreshLocationClick = function () {
         let endpoint = FormHelper.getInputValue('runEndpoint');
         let locationSelect = FormHelper.getInput('location')
         let serverLocations = new ServerLocation(endpoint);
@@ -28,7 +37,7 @@ var RunPage = (function () {
             });
     }
 
-    const refreshBrowsers = function () {
+    const onChooseLocationChange = function () {
         let locationName = this.value;
         let endpoint = FormHelper.getInputValue('runEndpoint');
         let serverLocations = new ServerLocation(endpoint);
@@ -64,7 +73,6 @@ var RunPage = (function () {
     }
 
     return {
-        init,
-        refreshLocations
+        init
     };
 })()

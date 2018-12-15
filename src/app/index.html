@@ -19,21 +19,21 @@
                         <span class="uk-form-label">WPT Endpoint</span>
                         <div class="uk-form-controls">
                             <div class="uk-position-relative">
-                                <a id="refreshLocations" class="uk-form-icon" uk-icon="icon: refresh"></a>
-                                <input class="uk-input" type="url" name="runEndpoint" id="runEndpoint" placeholder="Endpoint">
+                                <a id="iconRefreshLocations" class="uk-form-icon" uk-icon="icon: refresh"></a>
+                                <input id="runEndpoint" class="uk-input" type="url" name="runEndpoint" placeholder="Endpoint">
                             </div>
                         </div>
                     </div>
                     <div class="uk-margin">
                         <span class="uk-form-label">WPT API Key</span>
                         <div class="uk-form-controls">
-                            <input class="uk-input" type="url" name="runWptKey" id="runWptKey" placeholder="API Key">
+                            <input id="runWptKey" class="uk-input" type="url" name="runWptKey" placeholder="API Key (required for public instance)">
                         </div>
                     </div>
                     <div class="uk-margin">
                         <span class="uk-form-label">Test Location</span>
                         <div class="uk-form-controls">
-                            <select class="uk-select" name="location" id="location">
+                            <select id="chooseLocation" class="uk-select" name="location">
                             </select>
                             <script type="template" id="locationOptions">
                             {% for group, locations in items  %}
@@ -55,9 +55,9 @@
                         <script type="template" id="checkboxBrowser">
                         {% for value in browsers  %}
                             <label>
-                                <input class="uk-checkbox" type="checkbox" name="browser" id="browserChrome" value="{{ value }}" {{ "checked" if loop.first }}> {{ value }}
+                                <input class="uk-checkbox" type="checkbox" name="browser" value="{{ value }}" {{ "checked" if loop.first }}> {{ value }}
                             </label>
-                        {% else%}
+                        {% else %}
                             <label><input class="uk-checkbox" type="checkbox"> Not Available</label>
                         {% endfor  %}
                         </script>
@@ -65,7 +65,7 @@
                     <div class="uk-margin">
                         <span class="uk-form-label">
                             Emulate Browser
-                            <input class="uk-checkbox" type="checkbox" name="emulate" id="emulate" value="emulate">
+                            <input id="checkboxEmulate" class="uk-checkbox" type="checkbox" name="emulate" value="emulate">
                         </span>
                         <div class="uk-form-controls-text uk-grid-small" uk-grid>
                             <label>
@@ -152,7 +152,7 @@
                             <textarea class="uk-textarea" name="script" id="script" placeholder="Url or Script" rows="7"></textarea>
                         </div>
                     </div>
-                    <button id="btnRun" class="uk-button uk-button-primary" disabled>Start Runs</button>
+                    <button id="btnRun" class="uk-button uk-button-primary">Start Runs</button>
                 </div>
             </li>
             <li>
