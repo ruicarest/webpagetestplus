@@ -136,6 +136,22 @@ var ReportMetricConfig = function () {
             visible: true
         },
         {
+            name: 'domContentLoadedEventStart',
+            description: 'DOM Content Loaded',
+            expression: 'domContentLoadedEventStart',
+            format: miliToSeconds,
+            checked: true,
+            visible: true
+        },
+        {
+            name: 'fi',
+            description: 'First Interactive',
+            expression: '$max([firstContentfulPaint, firstMeaningfulPaint, domInteractive, domContentLoadedEventEnd, FirstInteractive])',
+            format: miliToSeconds,
+            checked: true,
+            visible: true
+        },
+        {
             name: 'tti',
             description: 'TTI',
             expression: 'TimeToInteractive',
@@ -215,7 +231,7 @@ var ReportMetricConfig = function () {
             let mi1 = metricState.findIndex(e => e.name === m1.name),
                 mi2 = metricState.findIndex(e => e.name === m2.name);
 
-            return mi1 - mi2;
+            return (mi1 < 0 ? 9999 : mi1)  - (mi2 < 0 ? 9999 : mi1);
         });
 
         metricState && metrics.forEach((metric, index) => metric.checked = metricState[index].selected);
