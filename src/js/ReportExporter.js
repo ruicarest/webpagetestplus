@@ -72,7 +72,7 @@ var ReportExporter = function (endpoint, cache = undefined) {
 
         // select
         steps.forEach(step => {
-            let metrics = step.values(options.metrics);
+            let metrics = step.values(options.metrics.map(m => m.name));
             csv.push(metrics.reduce(csvColumnReducer, ''))
         });
 
@@ -80,7 +80,7 @@ var ReportExporter = function (endpoint, cache = undefined) {
     }
 
     const exportHeader = function (exportMetrics) {
-        return exportMetrics.map(metricName => metricConfig.get(metricName).description)
+        return exportMetrics.map(metric => metricConfig.get(metric.name).description)
             .reduce(csvColumnReducer, '');
     }
 
