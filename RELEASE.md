@@ -1,3 +1,9 @@
+# v0.1.4 
+## 2018/12/17
+### Export
+* _feature_: New metrics DOM Content Loaded and First Interactive
+* _feature_: Save checked metrics on settings - @miguelcduarte
+
 # v0.1.3
 ## 2018/12/12
 ### Export
