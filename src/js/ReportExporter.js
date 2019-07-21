@@ -1,7 +1,9 @@
 var ReportExporter = function (endpoint, cache = undefined) {
-
+    const appSettings = new AppSettings();
     const endpointQuery = 'jsonResult.php?test=';
     const metricConfig = new ReportMetricConfig();
+    
+    let rowSeparator, columnSeparator;
 
     const get = function (testCode) {
         if (cache) {
@@ -119,16 +121,29 @@ var ReportExporter = function (endpoint, cache = undefined) {
     }
 
     const csvColumnReducer = function (line, value) {
-        return (line ? line + '\t' : '') + value;
+        return (line ? line + columnSeparator : '') + value;
     }
 
     const csvRowReducer = function (csv, line) {
-        return (csv ? csv + '\n' : '') + line;
+        return (csv ? csv + rowSeparator : '') + line;
     }
 
     const getJsonResultUrl = function (testCode) {
         return new URL(endpointQuery + testCode, endpoint).href;
     }
+
+    const tranformSettingValue = (value) => 
+        !value ? value : value
+            .replace("\\t", '\t')
+            .replace("\\r", '\r')
+            .replace("\\n", '\n');
+
+    const init = function() {
+        rowSeparator = tranformSettingValue(appSettings.get('csvRowSeparator'));
+        columnSeparator = tranformSettingValue(appSettings.get('csvColumnSeparator'));
+    }
+
+    init();
 
     return {
         get,

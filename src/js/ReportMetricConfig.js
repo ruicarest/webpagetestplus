@@ -3,13 +3,16 @@ var ReportMetricConfig = function () {
 
     const appSettings = new AppSettings();
 
-    let numberFormatDigits;
+    let formatNumberDigits, formatNumberDigitSeparator;
 
     const miliToSeconds = (time) => formatNumber(time / 1000);
 
     const bytesToKilobytes = (time) => formatNumber(time / 1024);
 
-    const formatNumber = (value, digits, defaultValue = 0) => Math.round(!value ? defaultValue : value, digits == undefined ? numberFormatDigits : digits);
+    const formatNumber = (value, digits, defaultValue = 0) => 
+        Math.round(!value ? defaultValue : value, digits == undefined ? formatNumberDigits : digits)
+            .toString()
+            .replace('.', formatNumberDigitSeparator);
 
     const defaultString = (value, defaultValue = 'n/a') => !value ? defaultValue : value;
 
@@ -213,7 +216,8 @@ var ReportMetricConfig = function () {
         metrics.forEach(metric => metric.evaluate = jsonata(metric.expression).evaluate);
         setState();
 
-        numberFormatDigits = parseInt(appSettings.get('formatNumberDigits'))
+        formatNumberDigits = parseInt(appSettings.get('formatNumberDigits'))
+        formatNumberDigitSeparator = appSettings.get('formatNumberDigitSeparator');
     }
 
     const get = (name) => metrics.filter((metric) => metric.name == name)[0];

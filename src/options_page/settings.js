@@ -13,16 +13,15 @@ window.addEvent("domready", function () {
         text: i18n.get("url")
     });
 
-    // METRICS
     settings.create({
-        tab: i18n.get("metrics"),
-        group: i18n.get("formatNumber"),
-        name: "formatNumberDigits",
-        type: "text",
-        label: i18n.get("digits"),
-        text: i18n.get("digits")
+        tab: i18n.get("server"),
+        group: i18n.get("cache"),
+        name: "useReportCache",
+        type: "checkbox",
+        label: i18n.get("useReportCache"),
     });
 
+    // METRICS
     let resetMetricOrderButton = settings.create({
         tab: i18n.get("metrics"),
         group: i18n.get("order"),
@@ -39,13 +38,41 @@ window.addEvent("domready", function () {
         text: i18n.get("resetChecked")
     })
 
-    // CACHE
+    // EXPORT
     settings.create({
-        tab: i18n.get("server"),
-        group: i18n.get("cache"),
-        name: "useReportCache",
-        type: "checkbox",
-        label: i18n.get("useReportCache"),
+        tab: i18n.get("export"),
+        group: i18n.get("formatNumber"),
+        name: "formatNumberDigits",
+        type: "text",
+        label: i18n.get("digits"),
+        text: i18n.get("digits")
+    });
+
+    settings.create({
+        tab: i18n.get("export"),
+        group: i18n.get("formatNumber"),
+        name: "formatNumberDigitSeparator",
+        type: "text",
+        label: i18n.get("digitSeparator"),
+        text: i18n.get("digitSeparator")
+    });
+
+    settings.create({
+        tab: i18n.get("export"),
+        group: i18n.get("csv"),
+        name: "csvColumnSeparator",
+        type: "text",
+        label: i18n.get("columnSeparator"),
+        text: i18n.get("separator")
+    });
+
+    settings.create({
+        tab: i18n.get("export"),
+        group: i18n.get("csv"),
+        name: "csvRowSeparator",
+        type: "text",
+        label: i18n.get("rowSeparator"),
+        text: i18n.get("separator")
     });
 
     // LAST TAB

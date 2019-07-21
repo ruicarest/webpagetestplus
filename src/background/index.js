@@ -10,8 +10,20 @@
             settings.set('formatNumberDigits', '2');
         }
 
+        if (settings.get('formatNumberDigitSeparator') == undefined) {
+            settings.set('formatNumberDigitSeparator', ',');
+        }
+
         if (settings.get('useReportCache') == undefined) {
             settings.set('useReportCache', true);
+        }
+
+        if (settings.get('csvColumnSeparator') == undefined) {
+            settings.set('csvColumnSeparator', '\\t');
+        }
+
+        if (settings.get('csvRowSeparator') == undefined) {
+            settings.set('csvRowSeparator', '\\n\\r');
         }
     });
 
