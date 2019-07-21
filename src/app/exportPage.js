@@ -121,7 +121,7 @@ var ExportPage = (function () {
 
     const setResult = function (text) {
         let csvInput = FormHelper.getInput('resultCsv');
-        csvInput.innerText = text;
+        csvInput.value = text;
     }
 
     const renderMetricsSelector = function () {
