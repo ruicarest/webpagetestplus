@@ -177,7 +177,7 @@
                         <script type="template" id="metricCheckbox">
                             <div>
                                 <span uk-icon="icon: table; ratio: 0.5"></span>
-                                <label>
+                                <label {% if tooltip %}uk-tooltip="title: {{ tooltip }}"{% endif %}>
                                     <input class="uk-checkbox" type="checkbox" name="metrics" id="checkbox_{{ name }}" value="{{ name }}" {{ "checked" if checked }}> {{ description }}
                                 </label>
                             </div>

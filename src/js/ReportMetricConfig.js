@@ -23,7 +23,7 @@ var ReportMetricConfig = function () {
     const metrics = [
         {
             name: 'summaryUrl',
-            description: 'Summary Url',
+            description: 'Report Url',
             expression: 'report.summary',
             format: defaultString,
             aggregate: firstValue,
@@ -31,7 +31,7 @@ var ReportMetricConfig = function () {
         },
         {
             name: 'testId',
-            description: 'Id',
+            description: 'Report Id',
             expression: 'report.id',
             format: defaultString,
             aggregate: firstValue,
@@ -104,7 +104,8 @@ var ReportMetricConfig = function () {
             expression: 'docTime',
             format: miliToSeconds,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Page load time (docTime)'
         },
         {
             name: 'ttfb',
@@ -112,7 +113,8 @@ var ReportMetricConfig = function () {
             expression: 'TTFB',
             format: miliToSeconds,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Time to first byte (TTFB)'
         },
         {
             name: 'render',
@@ -120,7 +122,8 @@ var ReportMetricConfig = function () {
             expression: 'render',
             format: miliToSeconds,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Start render (render)'
         },
         {
             name: 'userTime',
@@ -128,7 +131,8 @@ var ReportMetricConfig = function () {
             expression: 'userTime',
             format: miliToSeconds,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'User time (userTime)'
         },
         {
             name: 'speedIndex',
@@ -136,7 +140,8 @@ var ReportMetricConfig = function () {
             expression: 'SpeedIndex',
             format: miliToSeconds,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Speed index (SpeedIndex)'
         },
         {
             name: 'domContentLoadedEventStart',
@@ -144,7 +149,8 @@ var ReportMetricConfig = function () {
             expression: 'domContentLoadedEventStart',
             format: miliToSeconds,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Start time of document load event (domContentLoadedEventStart)'
         },
         {
             name: 'fi',
@@ -152,7 +158,8 @@ var ReportMetricConfig = function () {
             expression: '$max([firstContentfulPaint, firstMeaningfulPaint, domInteractive, domContentLoadedEventEnd, FirstInteractive])',
             format: miliToSeconds,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Custom TTI (max[firstContentfulPaint, firstMeaningfulPaint, domInteractive, domContentLoadedEventEnd, FirstInteractive])'
         },
         {
             name: 'lastInteractive',
@@ -160,7 +167,8 @@ var ReportMetricConfig = function () {
             expression: '$reverse(interactivePeriods)[0][0]',
             format: miliToSeconds,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Custom TTI - Start time of last period of interactivity (interactivePeriods.Last.StartTime)'
         },
         {
             name: 'tti',
@@ -168,7 +176,8 @@ var ReportMetricConfig = function () {
             expression: 'TimeToInteractive',
             format: miliToSeconds,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Custom TTI (TimeToInteractive)'
         },
         {
             name: 'requestsDoc',
@@ -176,7 +185,8 @@ var ReportMetricConfig = function () {
             expression: 'requestsDoc',
             format: formatNumber,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Total requests until the document load event (requestsDoc)'
         },
         {
             name: 'bytesInDoc',
@@ -184,7 +194,8 @@ var ReportMetricConfig = function () {
             expression: 'bytesInDoc',
             format: bytesToKilobytes,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Total bytes downloaded until the document load event (bytesInDoc)'
         },
         {
             name: 'pageSize',
@@ -192,7 +203,8 @@ var ReportMetricConfig = function () {
             expression: 'requests[0].objectSizeUncompressed',
             format: bytesToKilobytes,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Size of the first request (request[0].objectSizeUncompressed)'
         },
         {
             name: 'fullyTime',
@@ -200,7 +212,8 @@ var ReportMetricConfig = function () {
             expression: 'fullyLoaded',
             format: miliToSeconds,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Total time of the run (fullyLoaded)'
         },
         {
             name: 'fullyRequests',
@@ -208,7 +221,8 @@ var ReportMetricConfig = function () {
             expression: 'requestsFull',
             format: formatNumber,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Total requests during the run (requestsFull)'
         },
         {
             name: 'fullyBytes',
@@ -216,7 +230,8 @@ var ReportMetricConfig = function () {
             expression: 'bytesIn',
             format: bytesToKilobytes,
             checked: true,
-            visible: true
+            visible: true,
+            tooltip: 'Total bytes downloaded during the run (bytesIn)'
         },
     ];
 
