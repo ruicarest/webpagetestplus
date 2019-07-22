@@ -22,6 +22,18 @@ window.addEvent("domready", function () {
     });
 
     // METRICS
+    settings.create({
+        tab: i18n.get("metrics"),
+        group: i18n.get("aggregation"),
+        name: "medianMetric",
+        type: "radioButtons",
+        label: i18n.get("medianMetric"),
+        options: [
+            { value: 'plt', text: i18n.get("pageLoadTime") },
+            { value: 'speedIndex', text: i18n.get("speedIndex") }
+        ]
+    });
+
     let resetMetricOrderButton = settings.create({
         tab: i18n.get("metrics"),
         group: i18n.get("order"),

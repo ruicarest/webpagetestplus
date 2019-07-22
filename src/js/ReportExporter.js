@@ -61,9 +61,10 @@ var ReportExporter = function (endpoint, cache = undefined) {
             });
 
             if (options.aggregate.type == 'median') {
+                const medianMetric = appSettings.get('medianMetric') || 'plt';
                 for (let entry of steps) {
                     let [group, stepGroup] = entry;
-                    let items = stepGroup.steps().sort((a, b) => a.getValue('plt') - b.getValue('plt'));
+                    let items = stepGroup.steps().sort((a, b) => a.getValue(medianMetric) - b.getValue(medianMetric));
                     var medianIndex = Math.round(items.length / 2) - 1;
                     steps.set(group, items[medianIndex]);
                 }

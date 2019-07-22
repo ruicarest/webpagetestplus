@@ -1,5 +1,6 @@
 // SAMPLE
 this.i18n = {
+    "aggregation": { "en": "Aggregation" },
     "cache": { "en": "Cache" },
     "checked": { "en": "Checked" },
     "code": { "en": "Code" },
@@ -12,10 +13,12 @@ this.i18n = {
     "format": { "en": "Format" },
     "formatNumber": { "en": "Format Number" },
     "lastTab": { "en": "Last Tab" },
+    "medianMetric": { "en": "Median Metric" },
     "metrics": { "en": "Metrics" },
     "nothing-found": { "en": "No matches were found." },
     "number": { "en": "Number" },
     "order": { "en": "Order" },
+    "pageLoadTime": { "en": "Page load time" },
     "reports": { "en": "Reports" },
     "resetChecked": { "en": "Reset Checked" },
     "resetOrder": { "en": "Reset Order" },
@@ -23,6 +26,7 @@ this.i18n = {
     "search": { "en": "Search" },
     "server": { "en": "Server" },
     "settings": { "en": "Settings" },
+    "speedIndex": { "en": "Speed index" },
     "testCode": { "en": "Test Code" },
     "url": { "en": "Url" },
     "useReportCache": { "en": "Use Report Cache" },

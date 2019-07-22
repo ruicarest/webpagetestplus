@@ -25,6 +25,10 @@
         if (settings.get('csvRowSeparator') == undefined) {
             settings.set('csvRowSeparator', '\\r\\n');
         }
+
+        if (settings.get('medianMetric') == undefined) {
+            settings.set('medianMetric', 'speedIndex');
+        }
     });
 
     chrome.browserAction.onClicked.addListener(function () {
