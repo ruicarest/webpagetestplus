@@ -23,7 +23,7 @@
         }
 
         if (settings.get('csvRowSeparator') == undefined) {
-            settings.set('csvRowSeparator', '\\n\\r');
+            settings.set('csvRowSeparator', '\\r\\n');
         }
     });
 
