@@ -155,6 +155,14 @@ var ReportMetricConfig = function () {
             visible: true
         },
         {
+            name: 'lastInteractive',
+            description: 'Last Interactive',
+            expression: '$reverse(interactivePeriods)[0][0]',
+            format: miliToSeconds,
+            checked: true,
+            visible: true
+        },
+        {
             name: 'tti',
             description: 'TTI',
             expression: 'TimeToInteractive',
@@ -238,7 +246,11 @@ var ReportMetricConfig = function () {
             return (mi1 < 0 ? 9999 : mi1)  - (mi2 < 0 ? 9999 : mi1);
         });
 
-        metricState && metrics.forEach((metric, index) => metric.checked = metricState[index].selected);
+        metricState && metrics.forEach((metric, index) => {
+            if (metric && metricState[index]) {
+                metric.checked = metricState[index].selected;
+            }
+        });
     }
 
     init();
