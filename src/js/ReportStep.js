@@ -11,7 +11,7 @@ var ReportStep = function (reportDocument, stepObj) {
             return false;
         }
 
-        if (filters.steps && filters.steps.indexOf(getValue('step')) == -1) {
+        if (filters.steps.list && ((filters.steps.list.indexOf(getValue('step')) == -1) != filters.steps.exclude)) {
             return false;
         }
 

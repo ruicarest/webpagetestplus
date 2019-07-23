@@ -86,12 +86,15 @@ var ExportPage = (function () {
             filters.cachedView = cachedView;
         }
 
-        let steps = FormHelper.getInputValue('steps')
-            .split(',')
-            .filter(s => s);
-        if (steps.length) {
-            filters.steps = steps.map(s => parseInt(s));
+        let steps = {
+            raw: FormHelper.getInputValue('steps')
+        };
+        steps.exclude = steps.raw.startsWith("!");
+        let stepList = (steps.exclude ? steps.raw.substring(1) : steps.raw).split(',').filter(s => s);
+        if (stepList.length) {
+            steps.list = stepList.map(s => parseInt(s));
         }
+        filters.steps = steps;
 
         let outliers = FormHelper.getCheckedInputValue('filterOutliers');
         if (outliers == '1') {
