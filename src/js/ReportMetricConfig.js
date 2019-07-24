@@ -9,7 +9,7 @@ var ReportMetricConfig = function () {
 
     const bytesToKilobytes = (time) => formatNumber(time / 1024);
 
-    const formatNumber = (value, digits, defaultValue = 0) => 
+    const formatNumber = (value, digits, defaultValue = 0) =>
         Math.round(!value ? defaultValue : value, digits == undefined ? formatNumberDigits : digits)
             .toString()
             .replace('.', formatNumberDigitSeparator);
@@ -19,6 +19,22 @@ var ReportMetricConfig = function () {
     const firstValue = (values) => values[0];
 
     const count = (values) => values.length || 0;
+
+    const inFlightRequests = (requests, periodStart, periodEnd) => requests.filter(r => {
+        const reqStart = Math.min(r.ttfb_start, r.all_start, r.load_start, r.download_start);
+        const reqEnd = Math.max(r.ttfb_end, r.all_end, r.load_end, r.download_end);
+        if (
+            // request starts during period
+            (periodStart <= reqStart && reqStart <= periodEnd) ||
+            // request ends during period
+            (periodStart <= reqEnd && reqEnd <= periodEnd) ||
+            // requests runs during period
+            (reqStart <= periodStart && periodEnd <= reqEnd)) {
+            // GET requests (POSTs and failed requests are ignored)
+            return r.method == "GET" && 200 <= r.responseCode && r.responseCode <= 399;
+        }
+        return false;
+    });
 
     const metrics = [
         {
@@ -155,7 +171,7 @@ var ReportMetricConfig = function () {
         {
             name: 'fi',
             description: 'First Interactive',
-            expression: '$max([firstContentfulPaint, firstMeaningfulPaint, domInteractive, domContentLoadedEventEnd, FirstInteractive])',
+            expression: '$max([firstMeaningfulPaint, domContentLoadedEventStart, $filter(interactivePeriods, function($v, $i, $a) { $v[0] > firstContentfulPaint })[0][0]])',
             format: miliToSeconds,
             checked: true,
             visible: true,
@@ -178,6 +194,75 @@ var ReportMetricConfig = function () {
             checked: true,
             visible: true,
             tooltip: 'Custom TTI (TimeToInteractive)'
+        },
+        {
+            name: 'timeConsistentlyInteractive',
+            description: 'Time to Consistently Interactive',
+            expression: _ => {
+                const data = _(`{ 
+                    "firstContentfulPaint": firstContentfulPaint,
+                    "interactivePeriods": interactivePeriods,
+                    "requests": requests,
+                    "firstMeaningfulPaint": firstMeaningfulPaint,
+                    "domContentLoadedEventStart": domContentLoadedEventStart
+                }`);
+                const consistentlyInteractivePeriod =
+                    data.interactivePeriods
+                        // first interactive window
+                        .find(p => {
+                            // window after firstContentfulPaint
+                            if (p[0] < data.firstContentfulPaint) {
+                                return false
+                            }
+
+                            // period of 5 seconds fully contained
+                            if (p[1] - p[0] < 5000) {
+                                return false;
+                            }
+
+                            // no more than 2 in-flight requests
+                            return inFlightRequests(data.requests, p[0], p[1]).length <= 2
+                        }) || data.interactivePeriods.reverse()[0];
+
+                //interactive window, first meaningful paint or DOM Content Loaded, whichever is later
+                return Math.max(consistentlyInteractivePeriod[0], data.firstMeaningfulPaint, data.domContentLoadedEventStart);
+            },
+            format: miliToSeconds,
+            checked: false,
+            visible: true,
+            tooltip: 'Time to Consistently Interactive is the start of the interactive window (first interactive window where there is a contiguous period of 5 seconds with no more than 2 in-flight requests), first meaningful paint or DOM Content Loaded, whichever is later'
+        },
+        {
+            name: 'timeFirstInteractive',
+            description: 'Time to First Interactive',
+            expression: _ => {
+                const data = _(`{ 
+                    "firstContentfulPaint": firstContentfulPaint,
+                    "interactivePeriods": interactivePeriods,
+                    "requests": requests,
+                    "firstMeaningfulPaint": firstMeaningfulPaint,
+                    "domContentLoadedEventStart": domContentLoadedEventStart
+                }`);
+                const firstinteractivePeriod =
+                    data.interactivePeriods
+                        // first interactive window
+                        .find(p => {
+                            // window after firstContentfulPaint
+                            if (p[0] < data.firstContentfulPaint) {
+                                return false;
+                            }
+
+                            // interactive window (with no regard to in-flight requests)
+                            return inFlightRequests(data.requests, p[0], p[1]).length == 0
+                        }) || data.interactivePeriods.reverse()[0];
+
+                // interactive window, first meaningful paint or DOM Content Loaded, whichever is later
+                return Math.max(firstinteractivePeriod[0], data.firstMeaningfulPaint, data.domContentLoadedEventStart);
+            },
+            format: miliToSeconds,
+            checked: false,
+            visible: true,
+            tooltip: 'First Interactive is the start of the interactive window (first interactive window after first contentful paint), first meaningful paint or DOM Content Loaded, whichever is later'
         },
         {
             name: 'requestsDoc',
@@ -238,10 +323,10 @@ var ReportMetricConfig = function () {
     const init = function () {
         metrics.forEach(metric => {
             if (typeof metric.expression === "function") {
-                const expression = (exp, obj) => jsonata(exp).evaluate(obj);
+                const expression = (exp, obj) => cloneObject(returnSafe(() => jsonata(exp).evaluate(obj)));
                 metric.evaluate = obj => metric.expression(exp => expression(exp, obj));
             } else if (typeof metric.expression === "string") {
-                metric.evaluate = jsonata(metric.expression).evaluate;
+                metric.evaluate = obj => cloneObject(returnSafe(() => jsonata(metric.expression).evaluate(obj)));
             } else {
                 metric.evaluate = () => 0;
             }
@@ -267,7 +352,7 @@ var ReportMetricConfig = function () {
             let mi1 = metricState.findIndex(e => e.name === m1.name),
                 mi2 = metricState.findIndex(e => e.name === m2.name);
 
-            return (mi1 < 0 ? 9999 : mi1)  - (mi2 < 0 ? 9999 : mi1);
+            return (mi1 < 0 ? 9999 : mi1) - (mi2 < 0 ? 9999 : mi1);
         });
 
         metricState && metrics.forEach((metric, index) => {
@@ -275,6 +360,23 @@ var ReportMetricConfig = function () {
                 metric.checked = metricState[index].selected;
             }
         });
+    }
+
+    const cloneObject = function (obj) {
+        if (typeof obj === 'object') {
+            return JSON.parse(JSON.stringify(obj));
+        }
+
+        return obj;
+    }
+
+    const returnSafe = function (callback) {
+        try {
+            return callback()
+        } catch (error) {
+            console.error(error);
+            return 0;
+        }
     }
 
     init();
