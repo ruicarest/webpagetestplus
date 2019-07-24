@@ -232,11 +232,20 @@ var ReportMetricConfig = function () {
             checked: true,
             visible: true,
             tooltip: 'Total bytes downloaded during the run (bytesIn)'
-        },
+        }
     ];
 
     const init = function () {
-        metrics.forEach(metric => metric.evaluate = jsonata(metric.expression).evaluate);
+        metrics.forEach(metric => {
+            if (typeof metric.expression === "function") {
+                const expression = (exp, obj) => jsonata(exp).evaluate(obj);
+                metric.evaluate = obj => metric.expression(exp => expression(exp, obj));
+            } else if (typeof metric.expression === "string") {
+                metric.evaluate = jsonata(metric.expression).evaluate;
+            } else {
+                metric.evaluate = () => 0;
+            }
+        });
         setState();
 
         formatNumberDigits = parseInt(appSettings.get('formatNumberDigits'))
