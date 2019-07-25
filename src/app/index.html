@@ -228,13 +228,13 @@
                                 <input class="uk-checkbox js-aggregationOption" type="checkbox" name="mergeTest" id="mergeTest"
                                     value="merge" disabled> Merge Tests
                             </label>
-                            <label uk-tooltip="delay: 500; title: Calculate the average for each metric">
-                                <input class="uk-radio js-aggregationOption" type="radio" name="aggregateType" id="aggregateAverage"
-                                    value="average" disabled checked> Average
-                            </label>
                             <label uk-tooltip="delay: 500; title: Calculate the median run and exports the metrics of this run. Choose PLT or Speed index on Options to calculate the median run.">
                                 <input class="uk-radio js-aggregationOption" type="radio" name="aggregateType" id="aggregateMedian"
-                                    value="median" disabled> Median
+                                    value="median" disabled checked> Median
+                            </label>
+                            <label uk-tooltip="delay: 500; title: Calculate the average for each metric">
+                                <input class="uk-radio js-aggregationOption" type="radio" name="aggregateType" id="aggregateAverage"
+                                    value="average" disabled> Average
                             </label>
                             <label uk-tooltip="delay: 500; title: Calculate the standard deviation for each metric">
                                 <input class="uk-radio js-aggregationOption" type="radio" name="aggregateType" id="aggregateStDev"
