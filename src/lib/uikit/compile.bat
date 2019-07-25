@@ -5,6 +5,7 @@ mkdir custom
 
 xcopy "../webpagetestplus/src/lib/uikit/custom" "custom" /s/h/e/k/f/c/y
 
+yarn install
 start /wait yarn compile
 
 ls dist/css/
