@@ -8,13 +8,14 @@ var ExportPage = (function () {
         let settings = new AppSettings();
 
         document.getElementById("exportEndpoint").value = endpoint || settings.get('endpoint');
-        document.getElementById("testCode").value = testCode;        
-        
+        document.getElementById("testCode").value = testCode;
+
         renderMetricsSelector();
+        renderTableResult();
         bindEvents();
     }
 
-    const generateCsv = function () {
+    const processResults = function () {
         let exportEndpoint = FormHelper.getInputValue('exportEndpoint');
         let testCodes = FormHelper.getInputValue('testCode').split(',');
 
@@ -22,18 +23,23 @@ var ExportPage = (function () {
 
         let tasks = testCodes.map(testCode => {
             return reportExporter
-                .get(testCode)
+                .getRaw(testCode)
                 .catch((status) => {
                     console.log(status);
                 });
         })
 
         Promise.all(tasks).then(reports => {
-            setResult(reportExporter.exportCsv(reports, { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() }));
+            const data = reportExporter.getData(reports, { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() });
+            renderCsvResult(data);
+            renderTableResult(data);
         })
     }
 
     const copyToClipboard = function () {
+        const switcherDataTypes = UIkit.switcher(document.getElementsByClassName('js-SwitcherDataTypes'));
+        switcherDataTypes.show(1);
+        
         let csvInput = FormHelper.getInput('resultCsv');
         csvInput.select();
         document.execCommand("copy");
@@ -70,10 +76,10 @@ var ExportPage = (function () {
 
     const getExportMetrics = function (filterCallback) {
         let metricInputs = FormHelper.getInputs('metrics');
-        
+
         filterCallback = filterCallback || (i => i.checked);
-        
-        return Array.from(metricInputs).filter(filterCallback).map((i) => { 
+
+        return Array.from(metricInputs).filter(filterCallback).map((i) => {
             return { name: i.value, selected: i.checked }
         });
     }
@@ -122,11 +128,6 @@ var ExportPage = (function () {
         return aggregate;
     }
 
-    const setResult = function (text) {
-        let csvInput = FormHelper.getInput('resultCsv');
-        csvInput.value = text;
-    }
-
     const renderMetricsSelector = function () {
         let metricSelector = document.getElementById('metricSelector');
 
@@ -135,8 +136,21 @@ var ExportPage = (function () {
             .forEach(metric => HtmlHelper.insertBeforeEnd(metricSelector, Template.render('metricCheckbox', metric)));
     }
 
+    const renderCsvResult = function (data) {
+        const csv = data.exportCsv();
+        let csvInput = FormHelper.getInput('resultCsv');
+        csvInput.value = csv;
+    }
+
+    const renderTableResult = function (data) {
+        data = data || new ReportExporter().defaultData();
+        let tableResultPlaceholder = document.getElementById('exportTableResult');
+        HtmlHelper.clearInner(tableResultPlaceholder);
+        HtmlHelper.insertBeforeEnd(tableResultPlaceholder, Template.render('tableResult', data))
+    }
+    
     const bindEvents = function () {
-        document.getElementById('btnResult').addEventListener('click', generateCsv);
+        document.getElementById('btnResult').addEventListener('click', processResults);
         document.getElementById('btnCopyClipboard').addEventListener('click', copyToClipboard);
         document.getElementById('aggregate').addEventListener('change', onAggregationChange);
 
@@ -145,8 +159,6 @@ var ExportPage = (function () {
     }
 
     return {
-        init,
-        generateCsv,
-        copyToClipboard
+        init
     };
 })()

@@ -252,12 +252,40 @@
                         </div>
                     </div>
                     <button id="btnResult" class="uk-button uk-button-primary">Results</button>
+                    <button id="btnCopyClipboard" class="uk-button uk-button-secundary">Copy to Clipboard <span uk-icon="download"></span></button>
                 </div>
-                <div class="uk-margin">
-                    <label class="uk-form-label">CSV</label>
-                    <textarea class="uk-textarea" name="resultCsv" id="resultCsv" placeholder="Result Csv" rows="4"></textarea>
-                </div>
-                <button id="btnCopyClipboard" class="uk-button uk-button-secundary">Copy to Clipboard <span uk-icon="download"></span></button>
+                <ul class="uk-subnav uk-subnav-pill uk-margin js-SwitcherDataTypes" uk-switcher>
+                    <li><a class="js-TabDataTable" href="#">Data</a></li>
+                    <li><a class="js-TabCsv" href="#">CSV</a></li>
+                </ul>
+                <ul class="uk-switcher">
+                    <li id="exportTableResult"></li>
+                    <li>
+                        <textarea class="uk-textarea" name="resultCsv" id="resultCsv" placeholder="Result Csv" rows="4"></textarea>
+                    </li>
+                </ul>
+                <script type="template" id="tableResult">
+                    <table class="uk-table uk-table-small uk-table-divider">
+                        <tr>
+                            {% for col in header %}
+                                <th>{{ col }}</th>
+                            {% else %}
+                                <th>No Data</th>
+                            {% endfor  %}
+                        </tr>
+                        {% for row in rows %}
+                            <tr>
+                                {% for col in row %}
+                                    <td>{{ col }}</td>
+                                {% endfor  %}
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>No Data</td>
+                            </tr>
+                        {% endfor  %}
+                    </table>
+                </script>
             </li>
         </ul>
     </div>

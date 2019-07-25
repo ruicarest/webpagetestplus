@@ -2,10 +2,10 @@ var ReportExporter = function (endpoint, cache = undefined) {
     const appSettings = new AppSettings();
     const endpointQuery = 'jsonResult.php?test=';
     const metricConfig = new ReportMetricConfig();
-    
+
     let rowSeparator, columnSeparator;
 
-    const get = function (testCode) {
+    const getRaw = function (testCode) {
         if (cache) {
             return cache.get(endpoint, testCode, () => getTest(testCode));
         }
@@ -33,10 +33,17 @@ var ReportExporter = function (endpoint, cache = undefined) {
             });
     }
 
-    const exportCsv = function (reports, options) {
-        let csv = [];
+    const defaultData = function () {
+        const data = { header: [], rows: [] };
+        data.exportCsv = () => exportCsv.bind(this)(data);
+        
+        return data;
+    }
+
+    const getData = function (reports, options) {
+        let data = defaultData();
         if (options.filters.header) {
-            csv.push(exportHeader(options.metrics));
+            data.header = headerData(options.metrics);
         }
 
         // from
@@ -74,17 +81,27 @@ var ReportExporter = function (endpoint, cache = undefined) {
         }
 
         // select
-        steps.forEach(step => {
-            let metrics = step.values(options.metrics.map(m => m.name));
-            csv.push(metrics.reduce(csvColumnReducer, ''))
-        });
+        data.rows = steps.map(step => step.values(options.metrics.map(m => m.name)));
+
+        return data;
+    }
+
+    const exportCsv = function (data) {
+        let csv = [];
+        
+        if (data && data.header && data.header.length) {
+            csv.push(data.header.reduce(csvColumnReducer, ''));
+        }
+
+        if (data && data.rows && data.rows.length) {
+            data.rows.forEach(row => csv.push(row.reduce(csvColumnReducer, '')));
+        }
 
         return csv.reduce(csvRowReducer, '');
     }
 
-    const exportHeader = function (exportMetrics) {
-        return exportMetrics.map(metric => metricConfig.get(metric.name).description)
-            .reduce(csvColumnReducer, '');
+    const headerData = function (exportMetrics) {
+        return exportMetrics.map(metric => metricConfig.get(metric.name).description);
     }
 
     const pageKeyGetterByTest = function (step) {
@@ -133,13 +150,13 @@ var ReportExporter = function (endpoint, cache = undefined) {
         return new URL(endpointQuery + testCode, endpoint).href;
     }
 
-    const tranformSettingValue = (value) => 
+    const tranformSettingValue = (value) =>
         !value ? value : value
             .replace("\\t", '\t')
             .replace("\\r", '\r')
             .replace("\\n", '\n');
 
-    const init = function() {
+    const init = function () {
         rowSeparator = tranformSettingValue(appSettings.get('csvRowSeparator'));
         columnSeparator = tranformSettingValue(appSettings.get('csvColumnSeparator'));
     }
@@ -147,8 +164,9 @@ var ReportExporter = function (endpoint, cache = undefined) {
     init();
 
     return {
-        get,
-        exportCsv,
-        exportHeader
+        defaultData,
+        getRaw,
+        getData,
+        exportCsv
     }
 }
