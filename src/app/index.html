@@ -265,25 +265,40 @@
                     </li>
                 </ul>
                 <script type="template" id="tableResult">
-                    <table class="uk-table uk-table-small uk-table-divider">
-                        <tr>
-                            {% for col in header %}
-                                <th>{{ col }}</th>
-                            {% else %}
-                                <th>No Data</th>
-                            {% endfor  %}
-                        </tr>
-                        {% for row in rows %}
+                    <table class="uk-table uk-table-small uk-table-striped uk-table-divider uk-table-hover">
+                        <thead>
                             <tr>
-                                {% for col in row %}
-                                    <td>{{ col }}</td>
+                                {% for col in header %}
+                                    <th>{{ col }}</th>
+                                {% else %}
+                                    <th>No Data</th>
                                 {% endfor  %}
                             </tr>
-                        {% else %}
-                            <tr>
-                                <td>No Data</td>
-                            </tr>
-                        {% endfor  %}
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                                <tr>
+                                    {% for col in row %}
+                                        <td>{{ col }}</td>
+                                    {% endfor  %}
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>No Data</td>
+                                </tr>
+                            {% endfor  %}
+                        </tbody>
+                        {% if summary %}
+                            <tfoot>
+                                {% for row in summary %}
+                                    <tr>
+                                        {% for col in row %}
+                                            <td>{{ col }}</td>
+                                        {% endfor  %}
+                                    </tr>
+                                {% endfor %}
+                            </tfoot>
+                        {% endif  %}
                     </table>
                 </script>
             </li>

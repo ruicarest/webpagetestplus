@@ -16,30 +16,38 @@ var ReportMetricConfig = function () {
 
     const defaultString = (value, defaultValue = 'n/a') => !value ? defaultValue : value;
 
-    const firstValue = (values) => values[0];
+    const firstValue = (values) => values && values.length ? values[0] : '';
 
     const count = (values) => values.length || 0;
 
-    const inFlightRequests = (requests, periodStart, periodEnd) => requests.filter(r => {
-        const reqStart = Math.min(r.ttfb_start, r.all_start, r.load_start, r.download_start);
-        const reqEnd = Math.max(r.ttfb_end, r.all_end, r.load_end, r.download_end);
-        if (
-            // request starts during period
-            (periodStart <= reqStart && reqStart <= periodEnd) ||
-            // request ends during period
-            (periodStart <= reqEnd && reqEnd <= periodEnd) ||
-            // requests runs during period
-            (reqStart <= periodStart && periodEnd <= reqEnd)) {
-            // GET requests (POSTs and failed requests are ignored)
-            return r.method == "GET" && 200 <= r.responseCode && r.responseCode <= 399;
+    const inFlightRequests = (requests, periodStart, periodEnd) => {
+        if (!requests) {
+            return undefined;
         }
-        return false;
-    });
+
+        return requests.filter(r => {
+            const reqStart = Math.min(r.ttfb_start, r.all_start, r.load_start, r.download_start);
+            const reqEnd = Math.max(r.ttfb_end, r.all_end, r.load_end, r.download_end);
+            if (
+                // request starts during period
+                (periodStart <= reqStart && reqStart <= periodEnd) ||
+                // request ends during period
+                (periodStart <= reqEnd && reqEnd <= periodEnd) ||
+                // requests runs during period
+                (reqStart <= periodStart && periodEnd <= reqEnd)) {
+                // GET requests (POSTs and failed requests are ignored)
+                return r.method == "GET" && 200 <= r.responseCode && r.responseCode <= 399;
+            }
+
+            return false;
+        });
+    }
 
     const metrics = [
         {
             name: 'summaryUrl',
             description: 'Report Url',
+            type: 'string',
             expression: 'report.summary',
             format: defaultString,
             aggregate: firstValue,
@@ -48,6 +56,7 @@ var ReportMetricConfig = function () {
         {
             name: 'testId',
             description: 'Report Id',
+            type: 'string',
             expression: 'report.id',
             format: defaultString,
             aggregate: firstValue,
@@ -56,6 +65,7 @@ var ReportMetricConfig = function () {
         {
             name: 'location',
             description: 'Location',
+            type: 'string',
             expression: 'report.location',
             format: defaultString,
             aggregate: firstValue,
@@ -64,6 +74,7 @@ var ReportMetricConfig = function () {
         {
             name: 'label',
             description: 'Label',
+            type: 'string',
             expression: 'report.label',
             format: defaultString,
             aggregate: firstValue,
@@ -72,6 +83,7 @@ var ReportMetricConfig = function () {
         {
             name: 'browser',
             description: 'Browser',
+            type: 'string',
             expression: 'browser_name',
             format: defaultString,
             aggregate: firstValue,
@@ -81,6 +93,7 @@ var ReportMetricConfig = function () {
         {
             name: 'connectivity',
             description: 'Connectivity',
+            type: 'string',
             expression: 'report.connectivity',
             format: defaultString,
             aggregate: firstValue,
@@ -90,6 +103,7 @@ var ReportMetricConfig = function () {
         {
             name: 'run',
             description: 'Run',
+            type: 'string',
             expression: 'run',
             format: formatNumber,
             aggregate: count,
@@ -99,6 +113,7 @@ var ReportMetricConfig = function () {
         {
             name: 'cachedView',
             description: 'Cached View',
+            type: 'string',
             expression: 'cachedView',
             format: defaultString,
             aggregate: firstValue,
@@ -108,6 +123,7 @@ var ReportMetricConfig = function () {
         {
             name: 'step',
             description: 'Step',
+            type: 'string',
             expression: '$number(step)',
             format: formatNumber,
             aggregate: firstValue,
@@ -117,6 +133,7 @@ var ReportMetricConfig = function () {
         {
             name: 'plt',
             description: 'PLT',
+            type: 'number',
             expression: 'docTime',
             format: miliToSeconds,
             checked: true,
@@ -126,6 +143,7 @@ var ReportMetricConfig = function () {
         {
             name: 'ttfb',
             description: 'TTFB',
+            type: 'number',
             expression: 'TTFB',
             format: miliToSeconds,
             checked: true,
@@ -135,6 +153,7 @@ var ReportMetricConfig = function () {
         {
             name: 'render',
             description: 'Start Render',
+            type: 'number',
             expression: 'render',
             format: miliToSeconds,
             checked: true,
@@ -144,6 +163,7 @@ var ReportMetricConfig = function () {
         {
             name: 'userTime',
             description: 'User Time',
+            type: 'number',
             expression: 'userTime',
             format: miliToSeconds,
             checked: true,
@@ -153,6 +173,7 @@ var ReportMetricConfig = function () {
         {
             name: 'speedIndex',
             description: 'Speed Index',
+            type: 'number',
             expression: 'SpeedIndex',
             format: miliToSeconds,
             checked: true,
@@ -162,6 +183,7 @@ var ReportMetricConfig = function () {
         {
             name: 'domContentLoadedEventStart',
             description: 'DOM Content Loaded',
+            type: 'number',
             expression: 'domContentLoadedEventStart',
             format: miliToSeconds,
             checked: true,
@@ -171,6 +193,7 @@ var ReportMetricConfig = function () {
         {
             name: 'fi',
             description: 'First Interactive',
+            type: 'number',
             expression: '$max([firstMeaningfulPaint, domContentLoadedEventStart, $filter(interactivePeriods, function($v, $i, $a) { $v[0] > firstContentfulPaint })[0][0]])',
             format: miliToSeconds,
             checked: true,
@@ -180,6 +203,7 @@ var ReportMetricConfig = function () {
         {
             name: 'lastInteractive',
             description: 'Last Interactive',
+            type: 'number',
             expression: '$reverse(interactivePeriods)[0][0]',
             format: miliToSeconds,
             checked: true,
@@ -189,6 +213,7 @@ var ReportMetricConfig = function () {
         {
             name: 'tti',
             description: 'TTI',
+            type: 'number',
             expression: 'TimeToInteractive',
             format: miliToSeconds,
             checked: true,
@@ -198,6 +223,7 @@ var ReportMetricConfig = function () {
         {
             name: 'timeConsistentlyInteractive',
             description: 'Time to Consistently Interactive',
+            type: 'number',
             expression: _ => {
                 const data = _(`{ 
                     "firstContentfulPaint": firstContentfulPaint,
@@ -206,6 +232,11 @@ var ReportMetricConfig = function () {
                     "firstMeaningfulPaint": firstMeaningfulPaint,
                     "domContentLoadedEventStart": domContentLoadedEventStart
                 }`);
+
+                if (!data.interactivePeriods || !data.requests) {
+                    return 0;
+                }
+
                 const consistentlyInteractivePeriod =
                     data.interactivePeriods
                         // first interactive window
@@ -235,6 +266,7 @@ var ReportMetricConfig = function () {
         {
             name: 'timeFirstInteractive',
             description: 'Time to First Interactive',
+            type: 'number',
             expression: _ => {
                 const data = _(`{ 
                     "firstContentfulPaint": firstContentfulPaint,
@@ -243,6 +275,11 @@ var ReportMetricConfig = function () {
                     "firstMeaningfulPaint": firstMeaningfulPaint,
                     "domContentLoadedEventStart": domContentLoadedEventStart
                 }`);
+
+                if (!data.interactivePeriods || !data.requests) {
+                    return 0;
+                }
+
                 const firstinteractivePeriod =
                     data.interactivePeriods
                         // first interactive window
@@ -267,6 +304,7 @@ var ReportMetricConfig = function () {
         {
             name: 'requestsDoc',
             description: 'Document Requests',
+            type: 'number',
             expression: 'requestsDoc',
             format: formatNumber,
             checked: true,
@@ -276,6 +314,7 @@ var ReportMetricConfig = function () {
         {
             name: 'bytesInDoc',
             description: 'Document Bytes In',
+            type: 'number',
             expression: 'bytesInDoc',
             format: bytesToKilobytes,
             checked: true,
@@ -285,6 +324,7 @@ var ReportMetricConfig = function () {
         {
             name: 'pageSize',
             description: 'Page Size',
+            type: 'number',
             expression: 'requests[0].objectSizeUncompressed',
             format: bytesToKilobytes,
             checked: true,
@@ -294,6 +334,7 @@ var ReportMetricConfig = function () {
         {
             name: 'fullyTime',
             description: 'Fully Loaded',
+            type: 'number',
             expression: 'fullyLoaded',
             format: miliToSeconds,
             checked: true,
@@ -303,6 +344,7 @@ var ReportMetricConfig = function () {
         {
             name: 'fullyRequests',
             description: 'Fully Requests',
+            type: 'number',
             expression: 'requestsFull',
             format: formatNumber,
             checked: true,
@@ -312,6 +354,7 @@ var ReportMetricConfig = function () {
         {
             name: 'fullyBytes',
             description: 'Fully Bytes In',
+            type: 'number',
             expression: 'bytesIn',
             format: bytesToKilobytes,
             checked: true,
@@ -337,11 +380,15 @@ var ReportMetricConfig = function () {
         formatNumberDigitSeparator = appSettings.get('formatNumberDigitSeparator');
     }
 
-    const get = (name) => metrics.filter((metric) => metric.name == name)[0];
+    const get = (name) => metrics.find((metric) => metric.name == name);
 
     const list = () => metrics;
 
     const setMetricsState = function (metricState) {
+        if (!metricState) {
+            return;
+        }
+
         appSettings.set(METRICS_STATE_KEY, metricState);
         setState(metricState);
     }

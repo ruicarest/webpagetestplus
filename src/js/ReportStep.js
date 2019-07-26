@@ -36,12 +36,20 @@ var ReportStep = function (reportDocument, stepObj) {
     }
 
     const getValue = function (metricName) {
+        if (!metricName) {
+            return;
+        }
+
         let [value] = get(metricName);
 
         return value;
     }
 
     const getFormat = function (metricName) {
+        if (!metricName) {
+            return;
+        }
+        
         let [value, metric] = get(metricName);
 
         return metric.format ? metric.format(value) : value;
@@ -54,13 +62,17 @@ var ReportStep = function (reportDocument, stepObj) {
         return [value, metric]
     }
 
-    const values = function (metricNames) {
+    const formatedValues = function (metricNames) {
+        if (!metricNames) {
+            return [];
+        }
+
         return metricNames.map(metricName => getFormat(metricName));
     }
 
     return {
         accept,
-        values,
+        formatedValues,
         getValue,
         getFormat
     }

@@ -7,16 +7,28 @@ var ReportStepGroup = function (stepsData, aggregateOp) {
     }
     
     const accept = function (filters) {
+        if (!stepsData) {
+            return;
+        }
+
         return stepsData.reduce((isAccept, stepObj) => isAccept && stepObj.accept(filters), false);
     }
 
     const getValue = function (metricName) {
+        if (!metricName) {
+            return;
+        }
+
         let [value] = get(metricName);
 
         return value;
     }
 
     const getFormat = function (metricName) {
+        if (!metricName) {
+            return;
+        }
+
         let [value, metric] = get(metricName);
 
         return metric.format ? metric.format(value) : value;
@@ -29,14 +41,18 @@ var ReportStepGroup = function (stepsData, aggregateOp) {
         return [(metric.aggregate || aggregateOp)(metricValues), metric];
     }
 
-    const values = function (metricNames) {
+    const formatedValues = function (metricNames) {
+        if (!metricNames) {
+            return [];
+        }
+
         return metricNames.map(metricName => getFormat(metricName));
     }
 
     return {
         steps,
         accept,
-        values,
+        formatedValues,
         getValue,
         getFormat
     }

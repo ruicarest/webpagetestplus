@@ -12326,3 +12326,9 @@ iframe.uk-cover {
   color: #f0506e;
   border-color: #f0506e;
 }
+.uk-table tfoot tr {
+  background-color: #f8f8f8;
+  font-weight: bold;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+}

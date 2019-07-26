@@ -17,7 +17,7 @@ var ExportPage = (function () {
 
     const processResults = function () {
         let exportEndpoint = FormHelper.getInputValue('exportEndpoint');
-        let testCodes = FormHelper.getInputValue('testCode').split(',');
+        let testCodes = getTestCodes();
 
         let reportExporter = new ReportExporter(exportEndpoint, cache);
 
@@ -39,7 +39,7 @@ var ExportPage = (function () {
     const copyToClipboard = function () {
         const switcherDataTypes = UIkit.switcher(document.getElementsByClassName('js-SwitcherDataTypes'));
         switcherDataTypes.show(1);
-        
+
         let csvInput = FormHelper.getInput('resultCsv');
         csvInput.select();
         document.execCommand("copy");
@@ -72,6 +72,12 @@ var ExportPage = (function () {
         var metrics = getExportMetrics(i => true);
 
         metricConfig.setMetricsState(metrics);
+    }
+
+    const getTestCodes = function () {
+        var testCodeInputValue = FormHelper.getInputValue('testCode');
+        
+        return (testCodeInputValue || '').split(',').filter(t => t);
     }
 
     const getExportMetrics = function (filterCallback) {
@@ -120,6 +126,8 @@ var ExportPage = (function () {
         if (aggregateValue == '1') {
             let aggregateType = FormHelper.getCheckedInputValue("aggregateType");
             aggregate.type = aggregateType;
+
+            aggregate.summary = getTestCodes().length == 2;
         }
 
         let mergeTestValue = FormHelper.getCheckedInputValue('mergeTest')
@@ -148,7 +156,7 @@ var ExportPage = (function () {
         HtmlHelper.clearInner(tableResultPlaceholder);
         HtmlHelper.insertBeforeEnd(tableResultPlaceholder, Template.render('tableResult', data))
     }
-    
+
     const bindEvents = function () {
         document.getElementById('btnResult').addEventListener('click', processResults);
         document.getElementById('btnCopyClipboard').addEventListener('click', copyToClipboard);
