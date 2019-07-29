@@ -29,10 +29,10 @@ var ExportPage = (function () {
                 });
         })
 
-        Promise.all(tasks).then(reports => {
-            const data = reportExporter.getData(reports, { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() });
-            renderCsvResult(data);
-            renderTableResult(data);
+        Promise.all(tasks).then(testsRaw => {
+            const report = reportExporter.getReport(testsRaw, { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() });
+            renderCsvResult(report);
+            renderTableResult(report);
         })
     }
 
@@ -144,17 +144,17 @@ var ExportPage = (function () {
             .forEach(metric => HtmlHelper.insertBeforeEnd(metricSelector, Template.render('metricCheckbox', metric)));
     }
 
-    const renderCsvResult = function (data) {
-        const csv = data.exportCsv();
+    const renderCsvResult = function (report) {
+        const csv = report.exportCsv();
         let csvInput = FormHelper.getInput('resultCsv');
         csvInput.value = csv;
     }
 
-    const renderTableResult = function (data) {
-        data = data || new ReportExporter().defaultData();
+    const renderTableResult = function (report) {
+        report = report || new ReportExporter().emptyReport();
         let tableResultPlaceholder = document.getElementById('exportTableResult');
         HtmlHelper.clearInner(tableResultPlaceholder);
-        HtmlHelper.insertBeforeEnd(tableResultPlaceholder, Template.render('tableResult', data))
+        HtmlHelper.insertBeforeEnd(tableResultPlaceholder, Template.render('tableResult', report))
     }
 
     const bindEvents = function () {

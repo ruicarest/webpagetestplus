@@ -1,24 +1,6 @@
 var ReportMetricConfig = function () {
     const METRICS_STATE_KEY = 'metricsState';
-
     const appSettings = new AppSettings();
-
-    let formatNumberDigits, formatNumberDigitSeparator;
-
-    const miliToSeconds = (time) => formatNumber(time / 1000);
-
-    const bytesToKilobytes = (time) => formatNumber(time / 1024);
-
-    const formatNumber = (value, digits, defaultValue = 0) =>
-        Math.round(!value ? defaultValue : value, digits == undefined ? formatNumberDigits : digits)
-            .toString()
-            .replace('.', formatNumberDigitSeparator);
-
-    const defaultString = (value, defaultValue = 'n/a') => !value ? defaultValue : value;
-
-    const firstValue = (values) => values && values.length ? values[0] : '';
-
-    const count = (values) => values.length || 0;
 
     const inFlightRequests = (requests, periodStart, periodEnd) => {
         if (!requests) {
@@ -47,95 +29,87 @@ var ReportMetricConfig = function () {
         {
             name: 'summaryUrl',
             description: 'Report Url',
-            type: 'string',
+            type: 'test',
+            dataType: 'string',
             expression: 'report.summary',
-            format: defaultString,
-            aggregate: firstValue,
             visible: true
         },
         {
             name: 'testId',
             description: 'Report Id',
-            type: 'string',
+            type: 'test',
+            dataType: 'string',
             expression: 'report.id',
-            format: defaultString,
-            aggregate: firstValue,
             visible: true
         },
         {
             name: 'location',
             description: 'Location',
-            type: 'string',
+            type: 'test',
+            dataType: 'string',
             expression: 'report.location',
-            format: defaultString,
-            aggregate: firstValue,
             visible: true
         },
         {
             name: 'label',
             description: 'Label',
-            type: 'string',
+            type: 'test',
+            dataType: 'string',
             expression: 'report.label',
-            format: defaultString,
-            aggregate: firstValue,
             visible: true
         },
         {
             name: 'browser',
             description: 'Browser',
-            type: 'string',
+            type: 'test',
+            dataType: 'string',
             expression: 'browser_name',
-            format: defaultString,
-            aggregate: firstValue,
             checked: true,
             visible: true
         },
         {
             name: 'connectivity',
             description: 'Connectivity',
-            type: 'string',
+            type: 'test',
+            dataType: 'string',
             expression: 'report.connectivity',
-            format: defaultString,
-            aggregate: firstValue,
             checked: true,
             visible: true
         },
         {
             name: 'run',
             description: 'Run',
-            type: 'string',
+            type: 'run',
+            dataType: 'string',
             expression: 'run',
-            format: formatNumber,
-            aggregate: count,
             checked: true,
             visible: true
         },
         {
             name: 'cachedView',
             description: 'Cached View',
-            type: 'string',
+            type: 'run',
+            dataType: 'string',
             expression: 'cachedView',
-            format: defaultString,
-            aggregate: firstValue,
             checked: true,
             visible: true
         },
         {
             name: 'step',
             description: 'Step',
-            type: 'string',
+            type: 'step',
+            dataType: 'string',
             expression: '$number(step)',
-            format: formatNumber,
-            aggregate: firstValue,
             checked: true,
             visible: true
         },
         {
             name: 'plt',
             description: 'PLT',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: 'docTime',
-            format: miliToSeconds,
             checked: true,
             visible: true,
             tooltip: 'Page load time (docTime)'
@@ -143,9 +117,10 @@ var ReportMetricConfig = function () {
         {
             name: 'ttfb',
             description: 'TTFB',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: 'TTFB',
-            format: miliToSeconds,
             checked: true,
             visible: true,
             tooltip: 'Time to first byte (TTFB)'
@@ -153,9 +128,10 @@ var ReportMetricConfig = function () {
         {
             name: 'render',
             description: 'Start Render',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: 'render',
-            format: miliToSeconds,
             checked: true,
             visible: true,
             tooltip: 'Start render (render)'
@@ -163,9 +139,10 @@ var ReportMetricConfig = function () {
         {
             name: 'userTime',
             description: 'User Time',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: 'userTime',
-            format: miliToSeconds,
             checked: true,
             visible: true,
             tooltip: 'User time (userTime)'
@@ -173,9 +150,10 @@ var ReportMetricConfig = function () {
         {
             name: 'speedIndex',
             description: 'Speed Index',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: 'SpeedIndex',
-            format: miliToSeconds,
             checked: true,
             visible: true,
             tooltip: 'Speed index (SpeedIndex)'
@@ -183,9 +161,10 @@ var ReportMetricConfig = function () {
         {
             name: 'domContentLoadedEventStart',
             description: 'DOM Content Loaded',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: 'domContentLoadedEventStart',
-            format: miliToSeconds,
             checked: true,
             visible: true,
             tooltip: 'Start time of document load event (domContentLoadedEventStart)'
@@ -193,9 +172,10 @@ var ReportMetricConfig = function () {
         {
             name: 'fi',
             description: 'First Interactive',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: '$max([firstMeaningfulPaint, domContentLoadedEventStart, $filter(interactivePeriods, function($v, $i, $a) { $v[0] > firstContentfulPaint })[0][0]])',
-            format: miliToSeconds,
             checked: true,
             visible: true,
             tooltip: 'Custom TTI (max[firstContentfulPaint, firstMeaningfulPaint, domInteractive, domContentLoadedEventEnd, FirstInteractive])'
@@ -203,9 +183,10 @@ var ReportMetricConfig = function () {
         {
             name: 'lastInteractive',
             description: 'Last Interactive',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: '$reverse(interactivePeriods)[0][0]',
-            format: miliToSeconds,
             checked: true,
             visible: true,
             tooltip: 'Custom TTI - Start time of last period of interactivity (interactivePeriods.Last.StartTime)'
@@ -213,9 +194,10 @@ var ReportMetricConfig = function () {
         {
             name: 'tti',
             description: 'TTI',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: 'TimeToInteractive',
-            format: miliToSeconds,
             checked: true,
             visible: true,
             tooltip: 'Custom TTI (TimeToInteractive)'
@@ -223,7 +205,9 @@ var ReportMetricConfig = function () {
         {
             name: 'timeConsistentlyInteractive',
             description: 'Time to Consistently Interactive',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: _ => {
                 const data = _(`{ 
                     "firstContentfulPaint": firstContentfulPaint,
@@ -258,7 +242,6 @@ var ReportMetricConfig = function () {
                 //interactive window, first meaningful paint or DOM Content Loaded, whichever is later
                 return Math.max(consistentlyInteractivePeriod[0], data.firstMeaningfulPaint, data.domContentLoadedEventStart);
             },
-            format: miliToSeconds,
             checked: false,
             visible: true,
             tooltip: 'Time to Consistently Interactive is the start of the interactive window (first interactive window where there is a contiguous period of 5 seconds with no more than 2 in-flight requests), first meaningful paint or DOM Content Loaded, whichever is later'
@@ -266,7 +249,9 @@ var ReportMetricConfig = function () {
         {
             name: 'timeFirstInteractive',
             description: 'Time to First Interactive',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: _ => {
                 const data = _(`{ 
                     "firstContentfulPaint": firstContentfulPaint,
@@ -296,7 +281,6 @@ var ReportMetricConfig = function () {
                 // interactive window, first meaningful paint or DOM Content Loaded, whichever is later
                 return Math.max(firstinteractivePeriod[0], data.firstMeaningfulPaint, data.domContentLoadedEventStart);
             },
-            format: miliToSeconds,
             checked: false,
             visible: true,
             tooltip: 'First Interactive is the start of the interactive window (first interactive window after first contentful paint), first meaningful paint or DOM Content Loaded, whichever is later'
@@ -304,9 +288,9 @@ var ReportMetricConfig = function () {
         {
             name: 'requestsDoc',
             description: 'Document Requests',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
             expression: 'requestsDoc',
-            format: formatNumber,
             checked: true,
             visible: true,
             tooltip: 'Total requests until the document load event (requestsDoc)'
@@ -314,9 +298,10 @@ var ReportMetricConfig = function () {
         {
             name: 'bytesInDoc',
             description: 'Document Bytes In',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'B',
             expression: 'bytesInDoc',
-            format: bytesToKilobytes,
             checked: true,
             visible: true,
             tooltip: 'Total bytes downloaded until the document load event (bytesInDoc)'
@@ -324,9 +309,10 @@ var ReportMetricConfig = function () {
         {
             name: 'pageSize',
             description: 'Page Size',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'B',
             expression: 'requests[0].objectSizeUncompressed',
-            format: bytesToKilobytes,
             checked: true,
             visible: true,
             tooltip: 'Size of the first request (request[0].objectSizeUncompressed)'
@@ -334,9 +320,10 @@ var ReportMetricConfig = function () {
         {
             name: 'fullyTime',
             description: 'Fully Loaded',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'ms',
             expression: 'fullyLoaded',
-            format: miliToSeconds,
             checked: true,
             visible: true,
             tooltip: 'Total time of the run (fullyLoaded)'
@@ -344,9 +331,9 @@ var ReportMetricConfig = function () {
         {
             name: 'fullyRequests',
             description: 'Fully Requests',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
             expression: 'requestsFull',
-            format: formatNumber,
             checked: true,
             visible: true,
             tooltip: 'Total requests during the run (requestsFull)'
@@ -354,9 +341,10 @@ var ReportMetricConfig = function () {
         {
             name: 'fullyBytes',
             description: 'Fully Bytes In',
-            type: 'number',
+            type: 'step',
+            dataType: 'number',
+            measureUnit: 'B',
             expression: 'bytesIn',
-            format: bytesToKilobytes,
             checked: true,
             visible: true,
             tooltip: 'Total bytes downloaded during the run (bytesIn)'
@@ -375,9 +363,6 @@ var ReportMetricConfig = function () {
             }
         });
         setState();
-
-        formatNumberDigits = parseInt(appSettings.get('formatNumberDigits'))
-        formatNumberDigitSeparator = appSettings.get('formatNumberDigitSeparator');
     }
 
     const get = (name) => metrics.find((metric) => metric.name == name);

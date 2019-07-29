@@ -35,39 +35,33 @@ var ReportStep = function (reportDocument, stepObj) {
         return true;
     }
 
-    const getValue = function (metricName) {
-        if (!metricName) {
-            return;
-        }
-
-        let [value] = get(metricName);
+    const getValue = function (metric) {
+        let [value] = get(metric);
 
         return value;
     }
 
-    const getFormat = function (metricName) {
-        if (!metricName) {
-            return;
-        }
-        
-        let [value, metric] = get(metricName);
+    const getFormat = function (metric) {
+        const [value, metricObj] = get(metric);
 
-        return metric.format ? metric.format(value) : value;
+        return MetricHelper.format(metricObj, value);
     }
 
-    const get = function (metricName) {
-        let metric = metricConfig.get(metricName),
-            value = metric.evaluate(stepObj);
-
-        return [value, metric]
-    }
-
-    const formatedValues = function (metricNames) {
-        if (!metricNames) {
+    const get = function (metric) {
+        const metricObj = MetricHelper.object(metric, metricConfig);
+        if (!metricObj) {
             return [];
         }
 
-        return metricNames.map(metricName => getFormat(metricName));
+        return [MetricHelper.value(metricObj, stepObj), metricObj]
+    }
+
+    const formatedValues = function (metrics) {
+        if (!metrics) {
+            return;
+        }
+
+        return metrics.map(metric => getFormat(metric));
     }
 
     return {

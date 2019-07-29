@@ -33,83 +33,81 @@ var ReportExporter = function (endpoint, cache = undefined) {
             });
     }
 
-    const defaultData = function () {
-        const data = { header: [], rows: [] };
-        data.exportCsv = () => exportCsv.bind(this)(data);
+    const emptyReport = function () {
+        const report = { header: [], rows: [] };
+        report.exportCsv = () => exportCsv.bind(this)(report);
 
-        return data;
+        return report;
     }
 
-    const getData = function (reports, options) {
-        let data = defaultData();
+    const getReport = function (reports, options) {
+        let report = emptyReport();
         if (options.filters.header) {
-            data.header = headerData(options.metrics);
+            report.header = headerData(options.metrics);
         }
 
         // from
-        let steps = reports.reduce((steps, report) => {
+        let reportsSteps = reports.reduce((reportSteps, report) => {
             let reportDocument = new ReportDocument(report);
             for (let step of reportDocument.steps()) {
-                steps.push(step);
+                reportSteps.push(step);
             }
 
-            return steps
+            return reportSteps
         }, []);
 
         // where
-        steps = steps.filter(step => step.accept(options.filters));
-        let rows = steps;
+        reportsSteps = reportsSteps.filter(reportStep => reportStep.accept(options.filters));
+        let rows = reportsSteps;
 
         // group by
-        let stepsByGroup;
+        let reportStepsByGroup;
         if (options.aggregate.type) {
-            let aggregateOp = aggregateOperation(options.aggregate.type);
-            stepsByGroup = steps.groupBy(options.aggregate.mergeTest ? pageKeyGetter : pageKeyGetterByTest);
-            stepsByGroup.forEach((groupSteps, groupKey, group) => {
-                group.set(groupKey, new ReportStepGroup(groupSteps, aggregateOp))
+            reportStepsByGroup = reportsSteps.groupBy(options.aggregate.mergeTest ? pageKeyGetter : pageKeyGetterByTest);
+            reportStepsByGroup.forEach((groupSteps, groupKey, group) => {
+                group.set(groupKey, new ReportStepGroup(groupSteps, options.aggregate.type))
             });
 
             if (options.aggregate.type == 'median') {
                 const medianMetric = appSettings.get('medianMetric') || 'plt';
-                for (let entry of stepsByGroup) {
-                    let [group, stepGroup] = entry;
+                for (let [group, stepGroup] of reportStepsByGroup) {
                     let items = stepGroup.steps().sort((a, b) => a.getValue(medianMetric) - b.getValue(medianMetric));
                     var medianIndex = Math.round(items.length / 2) - 1;
-                    stepsByGroup.set(group, items[medianIndex]);
+                    reportStepsByGroup.set(group, items[medianIndex]);
                 }
-
-                rows = [...stepsByGroup.values()];
             }
+
+            rows = [...reportStepsByGroup.values()];
         }
 
         // select
         var metricNames = options.metrics.map(m => m.name);
-        data.rows = rows.map(r => r.formatedValues(metricNames));
+        report.rows = rows.map(r => r.formatedValues(metricNames));
 
         // summary
-        if (options.aggregate.summary && !options.aggregate.mergeTest) {
-            let summaryGroup = steps.groupBy(pageKeyGetter);
+        if (options.aggregate.type && options.aggregate.summary && !options.aggregate.mergeTest) {
+            let summaryGroup = reportsSteps.groupBy(pageKeyGetter);
             let summaryRows = [];
 
             for (let [sKey, sSteps] of summaryGroup) {
                 var sStepsByTest = sSteps.groupBy(pageKeyGetterByTest);
                 let sGroupSteps = [];
                 sStepsByTest.forEach((testSteps, testKey) => {
-                    sGroupSteps.push(stepsByGroup.get(testKey));
+                    sGroupSteps.push(reportStepsByGroup.get(testKey));
                 });
 
-                let absGroup = new ReportStepGroup(sGroupSteps, absoluteDiff);
+                let absGroup = new ReportStepGroup(sGroupSteps, 'absoluteDiff');
                 summaryRows.push(absGroup.formatedValues(metricNames));
 
                 // TODO: Refactor the metrics configuration to format in %
-                // let relGroup = new ReportStepGroup(sGroupSteps, relativeDiff);
-                // summaryRows.push(relGroup.formatedValues(metricNames));
+                let relGroup = new ReportStepGroup(sGroupSteps, 'relativeDiff');
+                summaryRows.push(relGroup.formatedValues(metricNames));
             }
 
-            data.summary = summaryRows;
+            report.summary = summaryRows;
         }
 
-        return data;
+        return report;
     }
 
     const exportCsv = function (data) {
@@ -144,22 +142,6 @@ var ReportExporter = function (endpoint, cache = undefined) {
             .join('_');
     }
 
-    const aggregateOperation = function (aggregateType) {
-        switch (aggregateType) {
-            case 'average':
-                return Math.avg;
-
-            case 'median':
-                return Math.median;
-
-            case 'standardDeviation':
-                return Math.stdev;
-
-            default:
-                return;
-        }
-    }
-
     const processResponseOk = function (response) {
         return response.response.data;
     }
@@ -174,36 +156,6 @@ var ReportExporter = function (endpoint, cache = undefined) {
 
     const csvRowReducer = function (csv, line) {
         return (csv ? csv + rowSeparator : '') + line;
-    }
-
-    const absoluteDiff = function (values) {
-        let [a, b] = values;
-        if (typeof a == "number" && typeof b == "number") {
-            return b - a;
-        }
-
-        return stringDiff(a, b);
-    }
-
-    const relativeDiff = function (values) {
-        let [a, b] = values;
-        if (typeof a == "number" && typeof b == "number") {
-            return ((b / a) - 1) * 100;
-        }
-
-        return stringDiff(a, b);
-    }
-
-    const stringDiff = function (a, b) {
-        if (typeof a == "string" && typeof b == "string") {
-            if (a == b) {
-                return a;
-            }
-
-            return a + ',' + b;
-        }
-
-        return '';
     }
 
     const getJsonResultUrl = function (testCode) {
@@ -224,9 +176,9 @@ var ReportExporter = function (endpoint, cache = undefined) {
     init();
 
     return {
-        defaultData,
+        emptyReport,
         getRaw,
-        getData,
+        getReport,
         exportCsv
     }
 }
