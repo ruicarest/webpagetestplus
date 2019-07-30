@@ -20,14 +20,14 @@ var ReportStepGroup = function (reportSteps, aggregateType) {
         return value;
     }
 
-    const getFormat = function (metric) {
+    const getFormat = function (metric, options) {
         const [value, metricObj] = get(metric);
 
         if (metricObj.dataType == 'number' && aggregateType == 'relativeDiff') {
             return MetricHelper.converters.formatNumber(value)+'%';
         }
 
-        return MetricHelper.format(metricObj, value);
+        return MetricHelper.format(metricObj, value, options);
     }
 
     const get = function (metric) {
@@ -42,12 +42,12 @@ var ReportStepGroup = function (reportSteps, aggregateType) {
         return [aggOp(...values), metricObj];
     }
 
-    const formatedValues = function (metricNames) {
+    const formatedValues = function (metricNames, options) {
         if (!metricNames) {
             return [];
         }
 
-        return metricNames.map(metricName => getFormat(metricName));
+        return metricNames.map(metricName => getFormat(metricName, options));
     }
 
     const aggregateOperation = function (metric) {

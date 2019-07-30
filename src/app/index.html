@@ -259,17 +259,17 @@
                     <li><a class="js-TabCsv" href="#">CSV</a></li>
                 </ul>
                 <ul class="uk-switcher">
-                    <li id="exportTableResult"></li>
-                    <li>
-                        <textarea class="uk-textarea" name="resultCsv" id="resultCsv" placeholder="Result Csv" rows="4"></textarea>
+                    <li id="exportTableResult" class="uk-margin"></li>
+                    <li class="uk-margin">
+                        <textarea class="uk-textarea" name="resultCsv" id="resultCsv" placeholder="Result Csv" rows="13"></textarea>
                     </li>
                 </ul>
                 <script type="template" id="tableResult">
                     <table class="uk-table uk-table-small uk-table-striped uk-table-divider uk-table-hover">
                         <thead>
                             <tr>
-                                {% for col in header %}
-                                    <th>{{ col }}</th>
+                                {% for metric in metrics %}
+                                    <th>{{ metric }}</th>
                                 {% else %}
                                     <th>No Data</th>
                                 {% endfor  %}

@@ -3,8 +3,6 @@ var ReportExporter = function (endpoint, cache = undefined) {
     const endpointQuery = 'jsonResult.php?test=';
     const metricConfig = new ReportMetricConfig();
 
-    let rowSeparator, columnSeparator;
-
     const getRaw = function (testCode) {
         if (cache) {
             return cache.get(endpoint, testCode, () => getTest(testCode));
@@ -34,17 +32,14 @@ var ReportExporter = function (endpoint, cache = undefined) {
     }
 
     const emptyReport = function () {
-        const report = { header: [], rows: [] };
-        report.exportCsv = () => exportCsv.bind(this)(report);
-
-        return report;
+        return { metrics: [], rows: [], summary: [] };
     }
 
     const getReport = function (reports, options) {
         let report = emptyReport();
-        if (options.filters.header) {
-            report.header = headerData(options.metrics);
-        }
+
+        //columns
+        report.metrics = options.metrics.filter(m => m.selected).map(metric => MetricHelper.object(metric.name, metricConfig));
 
         // from
         let reportsSteps = reports.reduce((reportSteps, report) => {
@@ -81,8 +76,7 @@ var ReportExporter = function (endpoint, cache = undefined) {
         }
 
         // select
-        var metricNames = options.metrics.map(m => m.name);
-        report.rows = rows.map(r => r.formatedValues(metricNames));
+        report.rows = rows;
 
         // summary
         if (options.aggregate.type && options.aggregate.summary && !options.aggregate.mergeTest) {
@@ -90,46 +84,20 @@ var ReportExporter = function (endpoint, cache = undefined) {
             let summaryRows = [];
 
             for (let [sKey, sSteps] of summaryGroup) {
-                var sStepsByTest = sSteps.groupBy(pageKeyGetterByTest);
+                let sStepsByTest = sSteps.groupBy(pageKeyGetterByTest);
                 let sGroupSteps = [];
                 sStepsByTest.forEach((testSteps, testKey) => {
                     sGroupSteps.push(reportStepsByGroup.get(testKey));
                 });
 
-                let absGroup = new ReportStepGroup(sGroupSteps, 'absoluteDiff');
-                summaryRows.push(absGroup.formatedValues(metricNames));
-
-                // TODO: Refactor the metrics configuration to format in %
-                let relGroup = new ReportStepGroup(sGroupSteps, 'relativeDiff');
-                summaryRows.push(relGroup.formatedValues(metricNames));
+                summaryRows.push(new ReportStepGroup(sGroupSteps, 'absoluteDiff'));
+                summaryRows.push(new ReportStepGroup(sGroupSteps, 'relativeDiff'));
             }
 
             report.summary = summaryRows;
         }
 
         return report;
-    }
-
-    const exportCsv = function (data) {
-        let csv = [];
-
-        if (data && data.header && data.header.length) {
-            csv.push(data.header.reduce(csvColumnReducer, ''));
-        }
-
-        if (data && data.rows && data.rows.length) {
-            data.rows.forEach(row => csv.push(row.reduce(csvColumnReducer, '')));
-        }
-
-        if (data && data.summary && data.summary.length) {
-            data.summary.forEach(row => csv.push(row.reduce(csvColumnReducer, '')));
-        }
-
-        return csv.reduce(csvRowReducer, '');
-    }
-
-    const headerData = function (exportMetrics) {
-        return exportMetrics.map(metric => metricConfig.get(metric.name).description);
     }
 
     const pageKeyGetterByTest = function (step) {
@@ -150,35 +118,13 @@ var ReportExporter = function (endpoint, cache = undefined) {
         return new Error(response.statusText);
     }
 
-    const csvColumnReducer = function (line, value) {
-        return (line ? line + columnSeparator : '') + value;
-    }
-
-    const csvRowReducer = function (csv, line) {
-        return (csv ? csv + rowSeparator : '') + line;
-    }
-
     const getJsonResultUrl = function (testCode) {
         return new URL(endpointQuery + testCode, endpoint).href;
     }
 
-    const tranformSettingValue = (value) =>
-        !value ? value : value
-            .replace("\\t", '\t')
-            .replace("\\r", '\r')
-            .replace("\\n", '\n');
-
-    const init = function () {
-        rowSeparator = tranformSettingValue(appSettings.get('csvRowSeparator'));
-        columnSeparator = tranformSettingValue(appSettings.get('csvColumnSeparator'));
-    }
-
-    init();
-
     return {
         emptyReport,
         getRaw,
-        getReport,
-        exportCsv
+        getReport
     }
 }

@@ -1,8 +1,9 @@
 var ExportPage = (function () {
 
-    const settings = new AppSettings();
+    const appSettings = new AppSettings();
     const metricConfig = new ReportMetricConfig();
-    const cache = settings.get('useReportCache') ? new MemoryCache() : undefined;
+    const cache = appSettings.get('useReportCache') ? new MemoryCache() : undefined;
+    let rowSeparator, columnSeparator;
 
     const init = function (endpoint, testCode) {
         let settings = new AppSettings();
@@ -20,7 +21,6 @@ var ExportPage = (function () {
         let testCodes = getTestCodes();
 
         let reportExporter = new ReportExporter(exportEndpoint, cache);
-
         let tasks = testCodes.map(testCode => {
             return reportExporter
                 .getRaw(testCode)
@@ -30,9 +30,10 @@ var ExportPage = (function () {
         })
 
         Promise.all(tasks).then(testsRaw => {
-            const report = reportExporter.getReport(testsRaw, { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() });
-            renderCsvResult(report);
-            renderTableResult(report);
+            let options = { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() };
+            const report = reportExporter.getReport(testsRaw, options);
+            renderCsvResult(report, options);
+            renderTableResult(report, options);
         })
     }
 
@@ -76,7 +77,7 @@ var ExportPage = (function () {
 
     const getTestCodes = function () {
         var testCodeInputValue = FormHelper.getInputValue('testCode');
-        
+
         return (testCodeInputValue || '').split(',').filter(t => t);
     }
 
@@ -144,17 +145,58 @@ var ExportPage = (function () {
             .forEach(metric => HtmlHelper.insertBeforeEnd(metricSelector, Template.render('metricCheckbox', metric)));
     }
 
-    const renderCsvResult = function (report) {
-        const csv = report.exportCsv();
+    const renderCsvResult = function (report, options) {
+        rowSeparator = tranformSettingValue(appSettings.get('csvRowSeparator'));
+        columnSeparator = tranformSettingValue(appSettings.get('csvColumnSeparator'));
+
+        let csvText = '';
+        if (report && options) {
+            let csv = [];
+            let metricNames = report.metrics.map(m => m.name);
+            if (options.filters.header && report.metrics && report.metrics.length) {
+                csv.push(report.metrics.map(m => m.description).reduce(csvColumnReducer, ''));
+            }
+
+            if (report.rows && report.rows.length) {
+                report.rows.forEach(row => csv.push(row.formatedValues(metricNames).reduce(csvColumnReducer, '')));
+            }
+
+            if (report.summary && report.summary.length) {
+                report.summary.forEach(row => csv.push(row.formatedValues(metricNames).reduce(csvColumnReducer, '')));
+            }
+            csvText = csv.reduce(csvRowReducer, '');
+        }
+
         let csvInput = FormHelper.getInput('resultCsv');
-        csvInput.value = csv;
+        csvInput.value = csvText;
     }
+
+    const csvColumnReducer = function (line, value) {
+        return (line ? line + columnSeparator : '') + value;
+    }
+
+    const csvRowReducer = function (csv, line) {
+        return (csv ? csv + rowSeparator : '') + line;
+    }
+
+    const tranformSettingValue = (value) =>
+        !value ? value : value
+            .replace("\\t", '\t')
+            .replace("\\r", '\r')
+            .replace("\\n", '\n');
 
     const renderTableResult = function (report) {
         report = report || new ReportExporter().emptyReport();
+        const metricNames = report.metrics.map(m => m.name);
+        const formatOptions = { measureUnit: true };
+        const data = {
+            metrics: report.metrics.map(m => m.description),
+            rows: report.rows.map(row => row.formatedValues(metricNames, formatOptions)),
+            summary: report.summary.map(row => row.formatedValues(metricNames, formatOptions))
+        };
         let tableResultPlaceholder = document.getElementById('exportTableResult');
         HtmlHelper.clearInner(tableResultPlaceholder);
-        HtmlHelper.insertBeforeEnd(tableResultPlaceholder, Template.render('tableResult', report))
+        HtmlHelper.insertBeforeEnd(tableResultPlaceholder, Template.render('tableResult', data))
     }
 
     const bindEvents = function () {

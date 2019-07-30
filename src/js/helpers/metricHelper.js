@@ -19,25 +19,23 @@ var MetricHelper = (function () {
 
     const value = function (metric, stepObj) {
         if (isValid(metric)) {
-            return metric.evaluate(stepObj);
+            return convertMeasureUnit(metric, metric.evaluate(stepObj));
         }
 
         return;
     }
 
-    const format = function (metric, value) {
+    const format = function (metric, value, options) {
         if (!isValid(metric)) {
             return value;
         }
-
-        [value] = convertMeasureUnit(metric, value);
 
         switch (metric.dataType) {
             case 'string':
                 return defaultString(value);
 
             case 'number':
-                return formatNumber(value)
+                return formatNumber(value) + (options && options.measureUnit && metric.measureUnit ? metric.measureUnit : '') 
 
             default:
                 return value;
@@ -71,21 +69,18 @@ var MetricHelper = (function () {
         return false;
     }
 
-    const convertMeasureUnit = function (metric, value) {
+    const convertMeasureUnit = function (metric, value, options) {
         if (isValid(metric)) {
-            switch (metric.measureUnit) {
+            switch (metric.originalMeasureUnit) {
                 case 'ms':
-                    return [miliToSeconds(value), 's'];
+                    return miliToSeconds(value);
 
                 case 'B':
-                    return [bytesToKilobytes(value), 'KB'];
-
-                default:
-                    return [value, metric.measureUnit];
+                    return bytesToKilobytes(value);
             }
         }
 
-        return [value, undefined]
+        return value
     }
 
     const miliToSeconds = (time) => time / 1000;
