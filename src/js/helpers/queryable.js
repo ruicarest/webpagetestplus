@@ -7,7 +7,7 @@ var Queryable = function (arr) {
                 [Symbol.iterator]: function* () {
                     var item;
                     for (item of arr) {
-                        yield f(x);
+                        yield f(item);
                     }
                 }
             });

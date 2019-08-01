@@ -3,32 +3,33 @@ var ReportExporter = function (endpoint, cache = undefined) {
     const endpointQuery = 'jsonResult.php?test=';
     const metricConfig = new ReportMetricConfig();
 
-    const getRaw = function (testCode) {
+    const getTests = function (testCodes) {
+        let tests = [];
+        for (let testCode of testCodes) {
+            tests.push(getTest(testCode));
+        }
+
+        return tests;
+    }
+
+    const getTest = function (testCode) {
         if (cache) {
-            return cache.get(endpoint, testCode, () => getTest(testCode));
+            return cache.get([endpoint, testCode], () => requestTest(testCode), res => res && res.statusCode);
         }
 
         return getTest(testCode);
     }
 
-    const getTest = function (testCode) {
-        return new Promise(
-            (resolve, reject) => {
-                const request = new XMLHttpRequest();
-                request.responseType = 'json';
-                request.onload = function () {
-                    if (this.status === 200) {
-                        resolve(processResponseOk(this));
-                    } else {
-                        reject(processResponseFail(this));
-                    }
-                };
-                request.onerror = function () {
-                    reject(processResponseFail(this));
-                };
-                request.open('GET', getJsonResultUrl(testCode), true);
-                request.send();
-            });
+    const requestTest = function (testCode) {
+        const request = new XMLHttpRequest();
+        // request.responseType = 'json';
+        request.open('GET', getJsonResultUrl(testCode), false);
+        request.send();
+        if (request.status == 200) {
+            return processResponseOk(request);
+        } else {
+            return processResponseFail(request);
+        }
     }
 
     const emptyReport = function () {
@@ -110,12 +111,28 @@ var ReportExporter = function (endpoint, cache = undefined) {
             .join('_');
     }
 
-    const processResponseOk = function (response) {
-        return response.response.data;
+    const processResponseOk = function (request) {
+        let [success, test] = tryParseResponse(request.response);
+
+        return test.data;
     }
 
-    const processResponseFail = function (response) {
-        return new Error(response.statusText);
+    const processResponseFail = function (request) {
+        let [success, test] = tryParseResponse(request.response);
+
+        if (success) {
+            return new Error(test.statusText);
+        } else {
+            return new Error(request.status + ' ' + request.statusText);
+        }
+    }
+
+    const tryParseResponse = function (response) {
+        try {
+            return [true, JSON.parse(response)];
+        } catch {
+            return [false];
+        }
     }
 
     const getJsonResultUrl = function (testCode) {
@@ -124,7 +141,8 @@ var ReportExporter = function (endpoint, cache = undefined) {
 
     return {
         emptyReport,
-        getRaw,
+        getTest,
+        getTests,
         getReport
     }
 }

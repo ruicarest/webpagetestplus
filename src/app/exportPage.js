@@ -21,20 +21,30 @@ var ExportPage = (function () {
         let testCodes = getTestCodes();
 
         let reportExporter = new ReportExporter(exportEndpoint, cache);
-        let tasks = testCodes.map(testCode => {
-            return reportExporter
-                .getRaw(testCode)
-                .catch((status) => {
-                    console.log(status);
-                });
-        })
+        let testsRaw = reportExporter.getTests(testCodes);
 
-        Promise.all(tasks).then(testsRaw => {
-            let options = { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() };
-            const report = reportExporter.getReport(testsRaw, options);
-            renderCsvResult(report, options);
-            renderTableResult(report, options);
-        })
+        var inProgressTests = testsRaw.filter(test => test.statusCode < 200);
+        if (inProgressTests.length) {
+            inProgressTests.forEach(test => {
+                var message = 'Test ' + test.id + ' in progress: ' + test.statusText
+                UIkit.notification(message, { status: 'warning' });
+            });
+            return;
+        }
+
+        var failTests = testsRaw.filter(test => test.statusCode > 200);
+        if (failTests.length) {
+            failTests.forEach(test => {
+                var message = 'Test ' + test.id + ' thrown an error: ' + test.statusText
+                UIkit.notification(message, { status: 'danger' });
+            });
+            return;
+        }
+
+        let options = { metrics: getExportMetrics(), filters: getFilters(), aggregate: getAggregation() };
+        const report = reportExporter.getReport(testsRaw, options);
+        renderCsvResult(report, options);
+        renderTableResult(report, options);
     }
 
     const copyToClipboard = function () {
