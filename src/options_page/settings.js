@@ -87,25 +87,6 @@ window.addEvent("domready", function () {
         text: i18n.get("separator")
     });
 
-    // LAST TAB
-    settings.create({
-        tab: i18n.get("lastTab"),
-        group: i18n.get("wptResult"),
-        name: "lastTabEndpoint",
-        type: "text",
-        label: i18n.get("endpoint"),
-        text: i18n.get("url")
-    });
-
-    settings.create({
-        tab: i18n.get("lastTab"),
-        group: i18n.get("wptResult"),
-        name: "lastTabTestCode",
-        type: "text",
-        label: i18n.get("testCode"),
-        text: i18n.get("code")
-    });
-
     resetMetricOrderButton.addEvent('action', function () {
         appSettings.set('metricOrder', undefined);
     });

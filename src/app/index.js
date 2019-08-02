@@ -2,9 +2,9 @@ var Index = (function () {
 
     const init = function () {
         let settings = new AppSettings();
-
-        let endpoint = settings.get('lastTabEndpoint') || settings.get('endpoint'),
-            testCode = settings.get('lastTabTestCode');
+        let urlParams = new URLSearchParams(window.location.search);
+        let endpoint = urlParams.get('host') || settings.get('endpoint') || '',
+            testCode = urlParams.get('test') || '';
 
         ExportPage.init(endpoint, testCode);
         RunPage.init(endpoint);

@@ -35,10 +35,23 @@
         chrome.tabs.getSelected(null, function (tab) {
             let urlInfo = ReportHelper.getUrlInfo(tab.url);
 
-            settings.set('lastTabEndpoint', urlInfo.endpoint || '');
-            settings.set('lastTabTestCode', urlInfo.testCode || '');
+            let endpoint = urlInfo.endpoint || '';
+            let testCode = urlInfo.testCode || '';
 
-            chrome.tabs.create({ url: chrome.runtime.getURL('app/index.html') });
+            let params = [];
+            if (endpoint) {
+                params.push('host=' + encodeURIComponent(endpoint));
+            }
+
+            if (testCode) {
+                params.push('test=' + encodeURIComponent(testCode));
+            }
+
+            params = params.join('&');
+
+            chrome.tabs.create({ 
+                url: chrome.runtime.getURL('app/index.html' + (params ? '?' + params : ''))
+            });
         });
     });
 })()
